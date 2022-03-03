@@ -522,7 +522,6 @@ class _MovieSeatsPageState extends State<MovieSeatsPage> {
   void initState() {
 
     ///Get Cinema Seating Plan
-    //"Bearer ${widget.token}",
     movieModel.getCinemaSeatingPlan(widget.userChoosedayTimeslotId.toString(), widget.dateData.split(" ")[0])
         .then((value){
       setState(() {

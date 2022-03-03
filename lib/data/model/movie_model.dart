@@ -18,29 +18,32 @@ abstract class MovieModel{
   Future<UserVO> postLoginWithGoogle(String token);
   Future<UserVO> postLoginWithFacebook(String token);
   Future<void> postLogout();
-  Future<List<MovieVO>?> getNowPlayingMovies();
-  Future<List<MovieVO>?> getComingSoonMovies();
-  Future<MovieVO?> getMovieDetails(int movieId);
-  Future<List<ActorVO>?> getCreditsByMovie(int movieId);
-  Future<List<CinemaVO>?> getCinemaDayTimeslot(String movieId,String date);
+  void getNowPlayingMovies();
+  void getComingSoonMovies();
+  void getMovieDetails(int movieId);
+  void getCreditsByMovie(int movieId);
+  void getCinemaDayTimeslot(String movieId,String date);
   Future<List<SeatVO>?> getCinemaSeatingPlan(String cinemaDayTimeslotId,String bookingDate);
-  Future<List<SnackVO>?> getSnackList();
-  //String userToken
-  Future<List<PaymentVO>?> getPaymentMethod();
-   Future<UserVO?> getProfile();
+  void getSnackList();
+  void getPaymentMethod();
+  Future<UserVO?> getProfile();
   Future<void> createCard(String cardNumber,String cardHolder,String expirationDate,String cvc);
   Future<UserSelectVO?> checkout(CheckoutRequestVO checkoutRequest);
 
   ///Database
   Future<List<UserVO>> getRegisterUserInfoDatabase();
-  Future<List<UserVO>> getLoginUserInfoDatabase();
+  Stream<List<UserVO>> getLoginUserInfoDatabase();
   Future<void> logoutUserInfoDatabase();
-  Future<List<CardVO>?> getCardsFromProfileDatabase();
-  Future<List<MovieVO>?> getNowPlayingMovieDatabase();
-  Future<List<MovieVO>?> getComingSoonMovieDatabase();
-  Future<MovieVO?> getMovieDetailsDatabase(int movieId);
-  Future<List<SnackVO>?> getSnacksFromDatabase();
+  Stream<List<MovieVO>> getNowPlayingMovieDatabase();
+  Stream<List<MovieVO>> getComingSoonMovieDatabase();
+  Stream<MovieVO?> getMovieDetailsDatabase(int movieId);
+  Stream<List<SnackVO>?> getSnacksFromDatabase();
+  Stream<List<PaymentVO>> getPaymentMethodFromDatabase();
+   Stream<List<CardVO>> getCardsFromProfileDatabase();
 
-  Future<ActorListForHiveVO> getCreditsByMovieDatabase(int movieId);
-  Future<CinemaListForHiveVO> getCinemaDayTimeslotDatabase(String date);
+  Stream<ActorListForHiveVO?> getCreditsByMovieDatabase(int movieId);
+  Stream<CinemaListForHiveVO?> getCinemaDayTimeslotDatabase(String date);
+
+
+  Future<void> deleteAllCards();
 }

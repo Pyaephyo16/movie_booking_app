@@ -35,6 +35,43 @@ class MovieDao{
     return getMovieBox().get(movieId);
   }
 
+  ///Reactive Programming
+  
+  Stream<void> getAllMoviesEventStream(){
+    return getMovieBox().watch();
+  }
+
+
+  List<MovieVO> getNowplayingMoviesStream(){
+      if(getAllMovies() != null && getAllMovies().isNotEmpty){
+         print("Persistance layer data output check =========> ${getAllMovies()}");
+          return getAllMovies()
+            .where((element) => element.isNowPlaying ?? false)
+            .toList();
+      }else{
+        return [];
+      }
+  }
+
+  List<MovieVO> getComingSoonMoviesStream(){
+      if(getAllMovies() != null && getAllMovies().isNotEmpty){
+        return getAllMovies()
+        .where((element) => element.isComingSoon ?? false)
+        .toList();
+      }else{
+        return [];
+      }
+  }
+
+  MovieVO? getSingleMovieStream(int movieId){
+    if(getSingleMovie(movieId) != null){
+      print("Movie Detail check in database ====> ${getSingleMovie(movieId)}");
+      return getSingleMovie(movieId);
+    }else{
+      return MovieVO.emptySituation();
+    }
+  }
+
 
 
   Box<MovieVO> getMovieBox(){

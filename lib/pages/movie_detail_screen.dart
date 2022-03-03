@@ -36,56 +36,57 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   @override
   void initState() {
     ///Movie Details
-    movieModel.getMovieDetails(widget.movieId).then((movieDetailsInfo){
-      setState(() {
-        movieDetails = movieDetailsInfo;
-        imageView = movieDetailsInfo?.posterPath;
-      });
-    }).catchError((error){
-      debugPrint("Movie Detail Error ==========> ${error.toString()}");
-    });
+    // movieModel.getMovieDetails(widget.movieId).then((movieDetailsInfo){
+    //   setState(() {
+    //     movieDetails = movieDetailsInfo;
+    //     imageView = movieDetailsInfo?.posterPath;
+    //   });
+    // }).catchError((error){
+    //   debugPrint("Movie Detail Error ==========> ${error.toString()}");
+    // });
 
 
     ///Movie Details Database
-    movieModel.getMovieDetailsDatabase(widget.movieId).then((movie){
+    movieModel.getMovieDetailsDatabase(widget.movieId).listen((movie){
       setState(() {
+        print("Movie Detail insertion into view layer ===============> ${movie}");
         movieDetails = movie;
         imageView = movie?.posterPath;
       });
-    }).catchError((error){
+    }).onError((error){
       debugPrint("Movie Details Database Error ${error.toString()}");
     });
 
     ///Credits By Movie
-    movieModel.getCreditsByMovie(widget.movieId).then((castInfo){
-      setState(() {
-        cast = castInfo;
-      });
-      ///Credits By Movie Database
-      movieModel.getCreditsByMovieDatabase(widget.movieId).then((castData){
-        setState(() {
-          //cast = castData.cast<ActorVO>();
-          print("Get data from hive in view layer ${castData.actorList}");
-          cast = castData.actorList;
-        });
-      }).catchError((error){
-        debugPrint("Credits By Movie Database Error ==========> ${error.toString()}");
-      });
-    }).catchError((error){
-      debugPrint("Credits By Movie Error ==========> ${error.toString()}");
-    });
+    // movieModel.getCreditsByMovie(widget.movieId).then((castInfo){
+    //   setState(() {
+    //     cast = castInfo;
+    //   });
+    //   ///Credits By Movie Database
+    //   movieModel.getCreditsByMovieDatabase(widget.movieId).then((castData){
+    //     setState(() {
+    //       //cast = castData.cast<ActorVO>();
+    //       print("Get data from hive in view layer ${castData.actorList}");
+    //       cast = castData.actorList;
+    //     });
+    //   }).catchError((error){
+    //     debugPrint("Credits By Movie Database Error ==========> ${error.toString()}");
+    //   });
+    // }).catchError((error){
+    //   debugPrint("Credits By Movie Error ==========> ${error.toString()}");
+    // });
 
 
     // ///Credits By Movie Database
-    // movieModel.getCreditsByMovieDatabase(widget.movieId).then((castData){
-    //   setState(() {
-    //    //cast = castData.cast<ActorVO>();
-    //     print("Get data from hive in view layer ${castData.actorList}");
-    //       cast = castData.actorList;
-    //   });
-    // }).catchError((error){
-    //   debugPrint("Credits By Movie Database Error ==========> ${error.toString()}");
-    // });
+    movieModel.getCreditsByMovieDatabase(widget.movieId).listen((castData){
+      setState(() {
+       //cast = castData.cast<ActorVO>();
+        print("Get data from hive in view layer ${castData?.actorList}");
+          cast = castData?.actorList;
+      });
+    }).onError((error){
+      debugPrint("Credits By Movie Database Error ==========> ${error.toString()}");
+    });
 
     super.initState();
   }

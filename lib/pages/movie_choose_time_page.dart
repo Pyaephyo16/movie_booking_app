@@ -45,47 +45,52 @@ class _MovieChooseTimePageState extends State<MovieChooseTimePage> {
   @override
   void initState() {
     ///Get login userInfo From Database
-    movieModel.getLoginUserInfoDatabase().then((userInfo){
-      setState(() {
-        userData = userInfo;
-      });
-      ///Cinema Day Timeslot
-      //"Bearer ${userData?[0].token ?? "abc"}",
-      movieModel.getCinemaDayTimeslot(widget.movieId.toString(),dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value){
-        setState(() {
-          cinemaInfo = value;
-        });
-        ///Cinema Day Timeslot Database
-        movieModel.getCinemaDayTimeslotDatabase(dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value) {
-          setState(() {
-            print("Get data from hive in view layer ==============> ${value.cinemaList}");
-            //cinemaInfo = value.cast<CinemaVO>();
-            cinemaInfo = value.cinemaList;
-          });
-        });
-      });
+    // movieModel.getLoginUserInfoDatabase().listen((userInfo){
+    //   setState(() {
+    //     userData = userInfo;
+    //   });
+    //   ///Cinema Day Timeslot
+    //   movieModel.getCinemaDayTimeslot(widget.movieId.toString(),dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value){
+    //     setState(() {
+    //       cinemaInfo = value;
+    //     });
+    //     ///Cinema Day Timeslot Database
+    //     movieModel.getCinemaDayTimeslotDatabase(dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value) {
+    //       setState(() {
+    //         print("Get data from hive in view layer ==============> ${value.cinemaList}");
+    //         //cinemaInfo = value.cast<CinemaVO>();
+    //         cinemaInfo = value.cinemaList;
+    //       });
+    //     });
+    //   });
+
+    // });
 
       // ///Cinema Day Timeslot Database
-      // movieModel.getCinemaDayTimeslotDatabase(dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value) {
-      //   setState(() {
-      //     print("Get data in view layer ==============> ${value.cinemaList}");
-      //     //cinemaInfo = value.cast<CinemaVO>();
-      //     cinemaInfo = value.cinemaList;
-      //   });
-      // });
-
-    });
+      movieModel.getCinemaDayTimeslotDatabase(dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).listen((value) {
+        setState(() {
+          print("Get Cinema DayTimeslot in view layer ==============> ${value?.cinemaList}");
+          //cinemaInfo = value.cast<CinemaVO>();
+          cinemaInfo = value?.cinemaList;
+        });
+      });
 
     super.initState();
   }
 
   getNewTimeslots(String date){
-    //"Bearer ${userData?[0].token ?? "abc"}",
-    movieModel.getCinemaDayTimeslot(widget.movieId.toString(),dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value){
-      setState(() {
-        cinemaInfo = value;
+    // movieModel.getCinemaDayTimeslot(widget.movieId.toString(),dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).then((value){
+    //   setState(() {
+    //     cinemaInfo = value;
+    //   });
+    // });
+    movieModel.getCinemaDayTimeslotDatabase(dateData?.split(" ")[0] ?? DateTime.now().toString().split(" ")[0]).listen((value) {
+        setState(() {
+          print("Get Cinema DayTimeslot with new date in view layer ==============> ${value?.cinemaList}");
+          //cinemaInfo = value.cast<CinemaVO>();
+          cinemaInfo = value?.cinemaList;
+        });
       });
-    });
   }
 
 

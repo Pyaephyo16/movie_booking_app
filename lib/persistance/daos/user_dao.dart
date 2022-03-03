@@ -26,6 +26,21 @@ UserDao._internal();
        return getUserBox().clear();
   }
 
+  ///Reactive Programming
+  
+  Stream<void> getUserInfoEventStream(){
+    return getUserBox().watch();
+  }
+
+  List<UserVO> getUserInfoStream(){
+      if(getUserInfo() != null && getUserInfo().isNotEmpty){
+        print("Persistance layer data output check =========> ${getUserInfo()}");
+        return getUserInfo();
+      }else{
+        return [];
+      }
+  }
+
 
   Box<UserVO> getUserBox(){
     return Hive.box<UserVO>(BOX_NAME_USER_VO);

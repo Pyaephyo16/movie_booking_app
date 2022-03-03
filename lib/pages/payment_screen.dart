@@ -76,33 +76,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
 
     ///Get Profile
-    //"Bearer ${widget.token}"
-    movieModel.getProfile().then((data){
-      setState(() {
-        profile = data?.cards;
-      });
-      if(profile?.isNotEmpty ?? false){
-        //userChoose = profile?[0] ?? CardVO.empytSituation();
-        userChoose = profile?[0];
-      }
-    }).catchError((error){
-      debugPrint("GET Profile Error ============> ${error.toString()}");
-    });
+    // movieModel.getProfile().then((data){
+    //   setState(() {
+    //     profile = data?.cards;
+    //   });
+    //   if(profile?.isNotEmpty ?? false){
+    //     userChoose = profile?[0];
+    //   }
+    // }).catchError((error){
+    //   debugPrint("GET Profile Error ============> ${error.toString()}");
+    // });
 
 
-    ///Get All Cards From profile database
-    movieModel.getCardsFromProfileDatabase().then((value){
+    ///Get All profile database
+    movieModel.getCardsFromProfileDatabase().listen((value){
       setState(() {
+        print("All cards in view layer ===================> ${value}");
           profile = value;
       });
       if(profile?.isNotEmpty ?? false){
-        //userChoose = profile?[0] ?? CardVO.empytSituation();
         userChoose = profile?[0];
       }
-    }).catchError((error){
+    }).onError((error){
       debugPrint("Get All Cards From Profile Database Error ============> ${error.toString()}");
     });
 
+ 
     super.initState();
   }
 
@@ -153,16 +152,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                     SizedBox(height: MARGIN_MEDIUM_2,),
                     CardSectionView(
-                        //items: items,
                       profile: profile ?? [],
                       takeData: (index){
                        setState(() {
                          userChoose = profile?[index];
-                         //cardId = profile?[index].id ?? 0;
                        });
                       },
                     ),
                     SizedBox(height: MARGIN_MEDIUM_3),
+                    // OutlineButton(onPressed: (){
+                    //     movieModel.deleteAllCards();
+                    // },
+                    // child: Text("Clear"),
+                    // ),
                     Padding(
                       padding: EdgeInsets.only(left: MARGIN_MEDIUM_3,right: MARGIN_MEDIUM_3),
                       child: AddNewCardView(
@@ -259,19 +261,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Navigator.push(
                         context,
                         MaterialPageRoute(builder: (BuildContext context)=>pageWidget),
-                      ).then((value){
-                        if(value == true){
-                          //"Bearer ${widget.token}"
-                          movieModel.getProfile().then((data){
-                            setState(() {
-                              profile = data?.cards;
-                            });
-                          }).catchError((error){
-                            debugPrint("GET Profile Error Rrfresh ============> ${error.toString()}");
-                          });
+                      );
+    //                   .then((value){
+    //                     if(value == true){
+    //                       movieModel.getProfile().then((data){
+    //                         setState(() {
+    //                           print("New card crete success ====================> ${data?.cards}");
+    //                           profile = data?.cards;
+    //                         });
+    //                       }).catchError((error){
+    //                         debugPrint("GET Profile Error Rrfresh ============> ${error.toString()}");
+    //                       });
 
-                        }
-    });
+    //                     }
+    //                 });
   }
 }
 

@@ -12,6 +12,8 @@ class ActorListForHiveVO{
   @HiveField(0)
   List<ActorVO>? actorList;
 
+  ActorListForHiveVO.emptySituation();
+
   ActorListForHiveVO(this.actorList);
 
   factory ActorListForHiveVO.fromJson(Map<String,dynamic> json) => _$ActorListForHiveVOFromJson(json);

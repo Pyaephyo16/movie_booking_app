@@ -44,9 +44,14 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
     if(cvc == null || cvc.isEmpty){
       return;
     }
-    //"Bearer ${widget.token}",
-    movieModel.createCard(newCardNumber,newCardHolder,expirationDate,cvc)
-        .catchError((error){
+
+    movieModel.createCard(newCardNumber,newCardHolder,expirationDate,cvc).then((value){
+      movieModel.getProfile().then((data){
+        Navigator.pop(context);
+    }).catchError((error){
+      debugPrint("GET Profile Error ============> ${error.toString()}");
+    });
+    }).catchError((error){
           debugPrint("Create Card Error =======> ${error.toString}");
     });
   }
@@ -61,7 +66,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop(false);
+            Navigator.of(context).pop();
           },
           icon: Icon(
             Icons.chevron_left,
@@ -84,6 +89,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
                     userData: (data){
                           newCardNumber = data;
                     },
+                    isNumber: true,
                   ),
                   SizedBox(
                     height: MARGIN_MEDIUM_4,
@@ -93,6 +99,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
                     userData: (data){
                           newCardHolder = data;
                     },
+                    isNumber: false,
                   ),
                   SizedBox(
                     height: MARGIN_MEDIUM_4,
@@ -107,6 +114,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
                           userData: (data){
                                 expirationDate = data;
                           },
+                          isNumber: false,
                         ),
                       ),
                       Expanded(
@@ -115,6 +123,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
                         userData: (data){
                                 cvc = data;
                         },
+                        isNumber: true,
                         ),
                       ),
                     ],
@@ -130,7 +139,7 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
               child: GestureDetector(
                 onTap: (){
                     newCardCreation(newCardNumber,newCardHolder,expirationDate,cvc);
-                    Navigator.pop(context,true);
+
                 },
                 child: Container(
                   width: double.infinity,
@@ -161,8 +170,9 @@ class _PaymentInfoScreenState extends State<PaymentInfoScreen> {
 class NewCardInfoView extends StatelessWidget {
   final String title;
   final Function(String) userData;
+  final bool isNumber;
 
-  NewCardInfoView(this.title,{required this.userData});
+  NewCardInfoView(this.title,{required this.userData,required this.isNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +197,7 @@ class NewCardInfoView extends StatelessWidget {
               onChanged: (String text){
                 userData(text);
               },
+              keyboardType: isNumber==true ? TextInputType.number : TextInputType.text,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(
                   left: TEXT_REGULAR_4X,

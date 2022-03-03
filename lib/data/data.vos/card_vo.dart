@@ -36,4 +36,9 @@ class CardVO{
   factory CardVO.fromJson(Map<String,dynamic> json) => _$CardVOFromJson(json);
 
   Map<String,dynamic> toJson()=> _$CardVOToJson(this);
+
+  @override
+  String toString() {
+    return 'CardVO{id: $id, cardHolder: $cardHolder, cardNumber: $cardNumber, expirationDate: $expirationDate, cardType: $cardType}';
+  }
 }

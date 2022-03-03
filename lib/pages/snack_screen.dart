@@ -69,22 +69,33 @@ class _SnapScreenState extends State<SnapScreen> {
     // });
 
     ///Get Snack List Database
-    movieModel.getSnacksFromDatabase().then((snacks){
+    movieModel.getSnacksFromDatabase().listen((snacks){
       setState(() {
+        print("Get all snacks into data layer ==================> ${snacks}");
         snackList = snacks;
       });
-    }).catchError((error){
+    }).onError((error){
       debugPrint("Get Snack List Database Error =============> ${error.toString()}");
     });
 
     ///Get Payment Method
-    /////"Bearer ${widget.token}"
-    movieModel.getPaymentMethod().then((cards){
-      setState(() {
-        this.cards = cards;
-      });
-    }).catchError((error){
-      debugPrint("Get Payment Method Error ==========> ${error.toString()}");
+    // movieModel.getPaymentMethod().then((cards){
+    //   setState(() {
+    //     this.cards = cards;
+    //   });
+    // }).catchError((error){
+    //   debugPrint("Get Payment Method Error ==========> ${error.toString()}");
+    // });
+
+
+    //Get Payment Method Database
+    movieModel.getPaymentMethodFromDatabase().listen((cards) {
+        setState(() {
+          print("All payment methods in view layer =================> ${cards}");
+            this.cards = cards;
+        });
+    }).onError((error){
+        debugPrint("Get Payment Method Database Error ============> ${error.toString()}");
     });
 
 

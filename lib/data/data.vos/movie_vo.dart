@@ -126,6 +126,7 @@ class MovieVO{
   @HiveField(27)
   bool? isComingSoon;
 
+  MovieVO.emptySituation();
 
   MovieVO(
       this.adult,

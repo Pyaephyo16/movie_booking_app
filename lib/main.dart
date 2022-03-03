@@ -9,6 +9,7 @@ import 'package:hw3_movie_booking_app/data/data.vos/cinemalist_for_hive_vo.dart'
 import 'package:hw3_movie_booking_app/data/data.vos/collection_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/genre_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_vo.dart';
+import 'package:hw3_movie_booking_app/data/data.vos/payment_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/production_company_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/production_country_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
@@ -44,6 +45,7 @@ Hive.registerAdapter(CinemaVOAdapter());
 Hive.registerAdapter(CinemaListForHiveVOAdapter());
 Hive.registerAdapter(TimeslotVOAdapter());
 Hive.registerAdapter(SnackVOAdapter());
+Hive.registerAdapter(PaymentMethodVOAdapter());
 
 
 await Hive.openBox<UserVO>(BOX_NAME_USER_VO);
@@ -58,6 +60,7 @@ await Hive.openBox<SpokenLanguageVO>(BOX_NAME_SPOKEN_LANGUAGE_VO);
 await Hive.openBox<CinemaListForHiveVO>(BOX_NAME_CINEMA_VO);
 await Hive.openBox<TimeslotVO>(BOX_NAME_TIMESLOT_VO);
 await Hive.openBox<SnackVO>(BOX_NAME_SNACK_VO);
+await Hive.openBox<PaymentVO>(BOX_NMAE_PAYMENT_METHOD_VO);
 
   runApp(
     MaterialApp(

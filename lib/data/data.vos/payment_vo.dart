@@ -1,19 +1,26 @@
+import 'package:hive/hive.dart';
+import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'payment_vo.g.dart';
 
 @JsonSerializable()
+@HiveType(typeId: HIVE_TYPE_ID_PAYMENT_METHOD_VO,adapterName: "PaymentMethodVOAdapter")
 class PaymentVO{
 
   @JsonKey(name: "id")
+  @HiveField(0)
     int? id;
 
   @JsonKey(name: "name")
+  @HiveField(1)
     String? name;
 
     @JsonKey(name: "description")
+    @HiveField(2)
     String? description;
 
+    @HiveField(3)
     bool? isSelected;
 
 

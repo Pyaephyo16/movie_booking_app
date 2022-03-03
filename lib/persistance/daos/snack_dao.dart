@@ -27,6 +27,22 @@ class SnackDao{
   }
 
 
+  ///Reactive Programming
+
+  Stream<void> getAllSnacksEventStream(){
+      return getSnackBox().watch();
+  }
+
+  List<SnackVO> getAllSnacksStream(){
+    if(getAllSnacks() != null && getAllSnacks().isNotEmpty){
+      print("All Snacks in database====================> ${getAllSnacks()}");
+      return getAllSnacks();
+    }else{
+      return [];
+    }
+  }
+
+
   Box<SnackVO> getSnackBox(){
     return Hive.box<SnackVO>(BOX_NAME_SNACK_VO);
   }

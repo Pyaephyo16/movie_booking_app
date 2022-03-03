@@ -22,6 +22,22 @@ class ActorDao{
     return getActorBox().get(movieId);
   }
 
+
+  ///Reactive Programming
+  
+  Stream<void> getActorEventStream(){
+    return getActorBox().watch();
+  }
+
+  ActorListForHiveVO? getAllActorsStream(int movieId){
+      if(getAllActors(movieId) != null ){
+        print("Actor list in database ==========> ${getAllActors(movieId)}");
+        return getAllActors(movieId);
+      }else{
+        return ActorListForHiveVO.emptySituation();
+      }
+  }
+
   Box<ActorListForHiveVO> getActorBox(){
     return Hive.box<ActorListForHiveVO>(BOX_NAME_ACTOR_VO);
   }

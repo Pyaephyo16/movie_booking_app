@@ -40,19 +40,24 @@ class _MovieListScreenState extends State<MovieListScreen> {
   
   @override
   void initState(){
+
     ///Login User Info database
-    movieModel.getLoginUserInfoDatabase().then((userInfo){
+    movieModel.getLoginUserInfoDatabase().listen((userInfo){
         setState(() {
+          print("User data from database in view layer insertion =============> ${userInfo}");
           userData = userInfo;
         });
-        if(userData != null){
-          ///Get Snack List
-          movieModel.getSnackList().then((snacks){
-          }).catchError((error){
-            debugPrint("Get Snack List Error =============> ${error.toString()}");
-          });
-        }
+        // if(userData != null){
+        //   ///Get Snack List
+        //   movieModel.getSnackList().then((snacks){
+        //   }).catchError((error){
+        //     debugPrint("Get Snack List Error =============> ${error.toString()}");
+        //   });
+        // }
+    }).onError((error){
+      debugPrint("Something Wrong user data from database ========> ${error.toString()}");
     });
+  
 
     // ///Register User Info database
     // movieModel.getRegisterUserInfoDatabase().then((userInfo){
@@ -63,38 +68,41 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
 
     ///Get Now Playing Movies
-    movieModel.getNowPlayingMovies().then((movies){
-      setState(() {
-        nowPlayingMovieList = movies;
-      });
-    }).catchError((error){
-      debugPrint("Get Now Playing Error ===========> ${error.toString()}");
-    });
+    // movieModel.getNowPlayingMovies().then((movies){
+    //   setState(() {
+    //     print("Movie check ============> ${movies}");
+    //     nowPlayingMovieList = movies;
+    //   });
+    // }).catchError((error){
+    //   debugPrint("Get Now Playing Error ===========> ${error.toString()}");
+    // });
 
     ///Get Now Playing Movies Database
-    movieModel.getNowPlayingMovieDatabase().then((movies){
+    movieModel.getNowPlayingMovieDatabase().listen((movies){
         setState(() {
+          print("Nowplaying Movie Data access in view layer ==========> ${movies}");
           nowPlayingMovieList = movies;
         });
-    }).catchError((error){
+    }).onError((error){
       debugPrint("Now Playing Movies Database Error ======> ${error.toString()}");
     });
 
     ///Coming Soon Movies
-    movieModel.getComingSoonMovies().then((movies){
-      setState(() {
-        comingSoonMovieList = movies;
-      });
-    }).catchError((error){
-      debugPrint("Coming Soon Movies Error =========> ${error.toString()}");
-    });
+    // movieModel.getComingSoonMovies().then((movies){
+    //   setState(() {
+    //     comingSoonMovieList = movies;
+    //   });
+    // }).catchError((error){
+    //   debugPrint("Coming Soon Movies Error =========> ${error.toString()}");
+    // });
 
     ///Get Coming Soon Movies Database
-    movieModel.getComingSoonMovieDatabase().then((movies){
+    movieModel.getComingSoonMovieDatabase().listen((movies){
       setState(() {
+         print("Coming Soon Movie Data access in view layer ==========> ${movies}");
         comingSoonMovieList = movies;
       });
-    }).catchError((error){
+    }).onError((error){
       debugPrint("Coming Soon Movies Database Error =========> ${error.toString()} ");
     });
 

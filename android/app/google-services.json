@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "665226442716-rrbp5c0h9g0k61co00h6cl4on8fbf5ks.apps.googleusercontent.com",
+          "client_id": "665226442716-63oef1b247fecrhjt7a1mbmun0ac8sh9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.hw3_movie_booking_app",
-            "certificate_hash": "106b5575e01334e1beae0616fee1c05879cee85d"
+            "certificate_hash": "8200b2605b047e32ceeaf7c09db09667d1b9ed40"
           }
         },
         {

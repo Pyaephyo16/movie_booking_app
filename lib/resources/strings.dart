@@ -51,15 +51,18 @@ const SEAT_TYPE_TEXT = "Row no.";
 const SEAT_TYPE_EMPTY = "Empty";
 
 ///SHA 1
-//10:6B:55:75:E0:13:34:E1:BE:AE:06:16:FE:E1:C0:58:79:CE:E8:5D
-const String SHA_KEY = "10:6B:55:75:E0:13:34:E1:BE:AE:06:16:FE:E1:C0:58:79:CE:E8:5D";
-const String SHA_256_KEY = "EE:DC:44:16:6C:FF:7B:4B:8F:DF:B7:EB:DE:D3:4B:D6:D1:86:28:93:42:C2:AD:45:F4:A3:D2:73:7D:DD:3F:DB";
-const String FACEBOOK_OUTPUT = "EGtVdeATNOG+rgYW/uHAWHnO6F0=";
+// const String SHA_KEY = "10:6B:55:75:E0:13:34:E1:BE:AE:06:16:FE:E1:C0:58:79:CE:E8:5D";
+// const String SHA_256_KEY = "EE:DC:44:16:6C:FF:7B:4B:8F:DF:B7:EB:DE:D3:4B:D6:D1:86:28:93:42:C2:AD:45:F4:A3:D2:73:7D:DD:3F:DB";
+// const String FACEBOOK_OUTPUT = "EGtVdeATNOG+rgYW/uHAWHnO6F0=";
+
+const String SHA_KEY = "82:00:B2:60:5B:04:7E:32:CE:EA:F7:C0:9D:B0:96:67:D1:B9:ED:40";
+const String SHA_256_KEY = "2E:B3:CC:B3:C6:1B:D8:0C:21:A0:A2:54:C1:1F:C2:B8:68:00:D2:A5:AE:87:81:DA:0C:83:E0:7A:F8:9F:BC:F3";
+const String FACEBOOK_OUTPUT = "ggCyYFsEfjLO6vfAnbCWZ9G57UA=";
 
 
 ///Google sha test
 
-
+const String collection_for_movie_booking_app_source = "https://www.postman.com/collections/1805d4f72d4b820193d3";
 
 const String google_register_token = "ya29.A0ARrdaM-AGcP0Yv_KrHSNzBOk4ps6ix41HRuuMDw-aztLzVwlr4JXNlE3-Ba1bSE4ht-upR8gJeZ40M3xdhEjOp6yeL9oyGTu15FW-ybS4hJc0JlIF2ev6BJL06QZfPeR_C7sjgtEzTXJu5p5nX-gwJ6Fdvrz";
 const String google_signin_ppwwppaccount = "110276402918949819440";
