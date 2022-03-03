@@ -178,7 +178,7 @@ class MovieModelImpl extends MovieModel{
         }).toList() ?? [];
         return timeData;
       }).toList() ?? [];
-      CinemaListForHiveVO cinemaList = CinemaListForHiveVO(data);
+      CinemaListForHiveVO cinemaList = CinemaListForHiveVO(getTimeData);
       print("Cinema Day Timeslot Put to Hive Data =============> ${cinemaList}");
       mCinemaDao.saveAllCinemaDayTimeslot(date,cinemaList);
       //return Future.value(data);
@@ -244,7 +244,7 @@ class MovieModelImpl extends MovieModel{
 
   @override
   Future<void> createCard( String cardNumber, String cardHolder, String expirationDate, String cvc) {
-    //print("Create Card Data layer =======> ${userToken} ${cardNumber} ${cardHolder} ${expirationDate} ${cvc}");
+    print("Create Card Data layer =======>  ${cardNumber} ${cardHolder} ${expirationDate} ${cvc}");
     return _dataAgent.createCard(getUserTokenFromDatabase(), cardNumber, cardHolder, expirationDate, cvc);
   }
 
@@ -348,10 +348,11 @@ class MovieModelImpl extends MovieModel{
 
   @override
   Stream<CinemaListForHiveVO?> getCinemaDayTimeslotDatabase(String date) {
-    print("Get Data from Hive =========> ${ mCinemaDao.getAllCinemaDayTimeslot(date)}");
+    print("Get CinemaDayTimeslot  from Hive =========> ${ mCinemaDao.getAllCinemaDayTimeslot(date)}");
     // return Future.value(
     //   mCinemaDao.getAllCinemaDayTimeslot(date),
     // );
+        this.getCinemaDayTimeslot("", date);
       return mCinemaDao
       .getAllCinemaDaytimeslotEventStream()
       .startWith(mCinemaDao.getCinemaDayTimeslotStream(date))
