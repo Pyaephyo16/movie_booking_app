@@ -42,7 +42,7 @@ class MovieDao{
   }
 
 
-  List<MovieVO> getNowplayingMoviesStream(){
+  List<MovieVO> getNowplayingMovies(){
       if(getAllMovies() != null && getAllMovies().isNotEmpty){
          print("Persistance layer data output check =========> ${getAllMovies()}");
           return getAllMovies()
@@ -53,7 +53,13 @@ class MovieDao{
       }
   }
 
-  List<MovieVO> getComingSoonMoviesStream(){
+  Stream<List<MovieVO>> getNowplayingMoviesStream(){
+          return Stream.value(getAllMovies()
+            .where((element) => element.isNowPlaying ?? false)
+            .toList());
+  }
+
+  List<MovieVO> getComingSoonMovies(){
       if(getAllMovies() != null && getAllMovies().isNotEmpty){
         return getAllMovies()
         .where((element) => element.isComingSoon ?? false)
@@ -63,13 +69,24 @@ class MovieDao{
       }
   }
 
-  MovieVO? getSingleMovieStream(int movieId){
+   Stream<List<MovieVO>> getComingSoonMoviesStream(){
+        return Stream.value(getAllMovies()
+        .where((element) => element.isComingSoon ?? false)
+        .toList());
+     
+  }
+
+  MovieVO? getSingleMovieData(int movieId){
     if(getSingleMovie(movieId) != null){
       print("Movie Detail check in database ====> ${getSingleMovie(movieId)}");
       return getSingleMovie(movieId);
     }else{
       return MovieVO.emptySituation();
     }
+  }
+
+  Stream<MovieVO?> getSingleMovieStream(int movieId){
+      return Stream.value(getSingleMovie(movieId));
   }
 
 

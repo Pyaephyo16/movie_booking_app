@@ -32,13 +32,17 @@ class PaymentMethodDao{
     return getPaymentMethodBox().watch();
   }
 
-  List<PaymentVO> getPaymentMethodStream(){
+  List<PaymentVO> getPaymentMethod(){
       if(getAllPaymentMethod() !=null && getAllPaymentMethod().isNotEmpty){
         print("All Payment Method in database =========> ${getAllPaymentMethod()}");
         return getAllPaymentMethod();
       }else{
         return [];
       }
+  }
+
+  Stream<List<PaymentVO>> getPaymentMethodStream(){
+        return Stream.value(getAllPaymentMethod());
   }
 
   Box<PaymentVO> getPaymentMethodBox(){

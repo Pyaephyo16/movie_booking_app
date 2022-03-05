@@ -32,13 +32,17 @@ UserDao._internal();
     return getUserBox().watch();
   }
 
-  List<UserVO> getUserInfoStream(){
+  List<UserVO> getUserInfoData(){
       if(getUserInfo() != null && getUserInfo().isNotEmpty){
         print("Persistance layer data output check =========> ${getUserInfo()}");
         return getUserInfo();
       }else{
         return [];
       }
+  }
+
+   Stream<List<UserVO>> getUserInfoStream(){
+        return Stream.value(getUserInfo());
   }
 
 

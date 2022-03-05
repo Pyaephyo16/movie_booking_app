@@ -33,13 +33,17 @@ class SnackDao{
       return getSnackBox().watch();
   }
 
-  List<SnackVO> getAllSnacksStream(){
+  List<SnackVO> getAllSnacksData(){
     if(getAllSnacks() != null && getAllSnacks().isNotEmpty){
       print("All Snacks in database====================> ${getAllSnacks()}");
       return getAllSnacks();
     }else{
       return [];
     }
+  }
+
+  Stream<List<SnackVO>> getAllSnacksStream(){
+      return Stream.value(getAllSnacks());
   }
 
 

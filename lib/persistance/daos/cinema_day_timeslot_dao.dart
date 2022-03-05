@@ -27,13 +27,17 @@ class CinemaDayTimeslotDao{
     return getCinmeaBox().watch();
   }
 
-  CinemaListForHiveVO? getCinemaDayTimeslotStream(String date){
+  CinemaListForHiveVO? getCinemaDayTimeslot(String date){
       if(getAllCinemaDayTimeslot(date) != null){
         print("Cinema Daytime slot in database ==========================> ${getAllCinemaDayTimeslot(date)}");
           return getAllCinemaDayTimeslot(date);
       }else{
         return CinemaListForHiveVO.emptySituation();
       }
+  }
+
+   Stream<CinemaListForHiveVO?> getCinemaDayTimeslotStream(String date){
+          return Stream.value(getAllCinemaDayTimeslot(date));
   }
   
 

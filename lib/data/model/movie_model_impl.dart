@@ -271,7 +271,7 @@ class MovieModelImpl extends MovieModel{
     return mUserDao
           .getUserInfoEventStream()
           .startWith(mUserDao.getUserInfoStream())
-          .map((event) => mUserDao.getUserInfoStream()
+          .map((event) => mUserDao.getUserInfoData()
           );
   }
 
@@ -292,7 +292,7 @@ class MovieModelImpl extends MovieModel{
     return cardDao
     .getAllCardsEventStream()
     .startWith(cardDao.getAllCardsStream())
-    .map((event) => cardDao.getAllCardsStream());
+    .map((event) => cardDao.getAllCardsData());
   }
 
   @override
@@ -306,7 +306,7 @@ class MovieModelImpl extends MovieModel{
       return mMovieDao
       .getAllMoviesEventStream()
       .startWith(mMovieDao.getComingSoonMoviesStream())
-      .map((event) => mMovieDao.getComingSoonMoviesStream());
+      .map((event) => mMovieDao.getComingSoonMovies());
   }
 
   @override
@@ -320,7 +320,7 @@ class MovieModelImpl extends MovieModel{
       return mMovieDao
         .getAllMoviesEventStream()
         .startWith(mMovieDao.getNowplayingMoviesStream())
-        .map((event) => mMovieDao.getNowplayingMoviesStream());
+        .map((event) => mMovieDao.getNowplayingMovies());
   }
 
   @override
@@ -330,7 +330,7 @@ class MovieModelImpl extends MovieModel{
       return mMovieDao
       .getAllMoviesEventStream()
       .startWith(mMovieDao.getSingleMovieStream(movieId))
-      .map((event) => mMovieDao.getSingleMovieStream(movieId));
+      .map((event) => mMovieDao.getSingleMovieData(movieId));
   }
 
   @override
@@ -356,7 +356,7 @@ class MovieModelImpl extends MovieModel{
       return mCinemaDao
       .getAllCinemaDaytimeslotEventStream()
       .startWith(mCinemaDao.getCinemaDayTimeslotStream(date))
-      .map((event) => mCinemaDao.getCinemaDayTimeslotStream(date));
+      .map((event) => mCinemaDao.getCinemaDayTimeslot(date));
   }
 
   @override
@@ -366,7 +366,7 @@ class MovieModelImpl extends MovieModel{
       return mSnackDao
       .getAllSnacksEventStream()
       .startWith(mSnackDao.getAllSnacksStream())
-      .map((event) => mSnackDao.getAllSnacksStream());
+      .map((event) => mSnackDao.getAllSnacksData());
   }
 
   @override
@@ -378,7 +378,7 @@ class MovieModelImpl extends MovieModel{
       return paymentMethodDao
       .getAllPaymentMethodEventStream()
       .startWith(paymentMethodDao.getPaymentMethodStream())
-      .map((event) => paymentMethodDao.getPaymentMethodStream());
+      .map((event) => paymentMethodDao.getPaymentMethod());
   }
 
   @override

@@ -38,13 +38,17 @@ Stream<void> getAllCardsEventStream(){
   return getCardBox().watch();
 }
 
-List<CardVO> getAllCardsStream(){
+List<CardVO> getAllCardsData(){
   if(getAllCards() != null && getAllCards().isNotEmpty){
       print("All cards in database ===========================> ${getAllCards()}");
     return getAllCards();
   }else{
     return [];
   }
+}
+
+Stream<List<CardVO>> getAllCardsStream(){
+    return Stream.value(getAllCards());
 }
 
   Box<CardVO> getCardBox(){
