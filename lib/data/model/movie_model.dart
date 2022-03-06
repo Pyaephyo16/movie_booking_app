@@ -46,4 +46,5 @@ abstract class MovieModel{
 
 
   Future<void> deleteAllCards();
+  Future<void> deleteMoviesData();
 }

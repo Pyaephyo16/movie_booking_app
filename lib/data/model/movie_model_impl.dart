@@ -327,6 +327,8 @@ class MovieModelImpl extends MovieModel{
   Stream<MovieVO?> getMovieDetailsDatabase(int movieId) {
     //return Future.value(mMovieDao.getSingleMovie(movieId));
       this.getMovieDetails(movieId);
+      this.getNowPlayingMovieDatabase();
+      this.getComingSoonMovieDatabase();
       return mMovieDao
       .getAllMoviesEventStream()
       .startWith(mMovieDao.getSingleMovieStream(movieId))
@@ -381,9 +383,16 @@ class MovieModelImpl extends MovieModel{
       .map((event) => paymentMethodDao.getPaymentMethod());
   }
 
+
+///Delete Test
   @override
   Future<void> deleteAllCards() {
     return Future.value(cardDao.deleteAllCards());
+  }
+
+  @override
+  Future<void> deleteMoviesData() {
+   return Future.value(mMovieDao.DeleteMoviesData());
   }
 
 }

@@ -144,6 +144,13 @@ class _MovieListScreenState extends State<MovieListScreen> {
                      userName: userData?[0].name ?? "",
                      userEmail: userData?[0].email ?? "" ,
                   ),
+                  // SizedBox(height: MARGIN_XXLARGE,),
+                  // OutlineButton(
+                  //   onPressed: (){
+                  //     movieModel.deleteMoviesData();
+                  //   },
+                  //   child: Text("Clear Database"),
+                  //   ),
                   SizedBox(height: MARGIN_XXLARGE,),
                   Column(
                     children: menuItems.map((menu){

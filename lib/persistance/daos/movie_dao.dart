@@ -72,8 +72,7 @@ class MovieDao{
    Stream<List<MovieVO>> getComingSoonMoviesStream(){
         return Stream.value(getAllMovies()
         .where((element) => element.isComingSoon ?? false)
-        .toList());
-     
+        .toList()); 
   }
 
   MovieVO? getSingleMovieData(int movieId){
@@ -87,6 +86,12 @@ class MovieDao{
 
   Stream<MovieVO?> getSingleMovieStream(int movieId){
       return Stream.value(getSingleMovie(movieId));
+  }
+
+
+  ///Delete
+   DeleteMoviesData(){
+     return getMovieBox().clear();
   }
 
 
