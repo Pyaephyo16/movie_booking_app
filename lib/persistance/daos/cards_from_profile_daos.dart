@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
+import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
 class CardsFromProfileDao{
@@ -12,17 +13,12 @@ class CardsFromProfileDao{
 
   CardsFromProfileDao._internal();
 
-  void getCardsFromProfileDatabase(List<CardVO> cards)async{
-      Map<int,CardVO> getCardMap = Map.fromIterable(
-        cards,
-        key: (card) => card.id,
-        value: (card) => card,
-      );
-    await getCardBox().putAll(getCardMap);
+  void getCardsFromProfileDatabase(UserVO userData)async{
+        getCardBox().put(userData.token,userData);
   }
 
-  List<CardVO> getAllCards(){
-    return getCardBox().values.toList();
+  UserVO? getAllCards(String tokenData){
+    return getCardBox().get(tokenData);
   }
 
 
@@ -38,21 +34,21 @@ Stream<void> getAllCardsEventStream(){
   return getCardBox().watch();
 }
 
-List<CardVO> getAllCardsData(){
-  if(getAllCards() != null && getAllCards().isNotEmpty){
-      print("All cards in database ===========================> ${getAllCards()}");
-    return getAllCards();
+UserVO? getAllCardsData(String tokenData){
+  if(getAllCards(tokenData) != null){
+      print("All cards in database ===========================> ${getAllCards(tokenData)}");
+    return getAllCards(tokenData);
   }else{
-    return [];
+    return UserVO.emptySituation();
   }
 }
 
-Stream<List<CardVO>> getAllCardsStream(){
-    return Stream.value(getAllCards());
+Stream<UserVO?> getAllCardsStream(String tokenData){
+    return Stream.value(getAllCards(tokenData));
 }
 
-  Box<CardVO> getCardBox(){
-    return Hive.box<CardVO>(BOX_NAME_CARD_VO);
+  Box<UserVO> getCardBox(){
+    return Hive.box<UserVO>(BOX_NAME_CARD_VO);
   }
 
 }

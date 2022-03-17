@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hw3_movie_booking_app/blocs/movie_detail_page_bloc.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/actor_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
@@ -12,12 +13,14 @@ import 'package:hw3_movie_booking_app/resources/dimens.dart';
 import 'package:hw3_movie_booking_app/resources/strings.dart';
 import 'package:hw3_movie_booking_app/widgets/button_view.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetailScreen extends StatefulWidget {
 
   final int movieId;
+  final bool isNowPlaying;
 
-  MovieDetailScreen({required this.movieId});
+  MovieDetailScreen({required this.movieId,required this.isNowPlaying});
 
   @override
   _MovieDetailScreenState createState() => _MovieDetailScreenState();
@@ -25,138 +28,85 @@ class MovieDetailScreen extends StatefulWidget {
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
-  ///Movie Model
-  MovieModel movieModel = MovieModelImpl();
-
-  ///State Variable
-  MovieVO? movieDetails;
-  List<ActorVO>? cast;
-  String? imageView;
-
-  @override
-  void initState() {
-    ///Movie Details
-    // movieModel.getMovieDetails(widget.movieId).then((movieDetailsInfo){
-    //   setState(() {
-    //     movieDetails = movieDetailsInfo;
-    //     imageView = movieDetailsInfo?.posterPath;
-    //   });
-    // }).catchError((error){
-    //   debugPrint("Movie Detail Error ==========> ${error.toString()}");
-    // });
-
-
-    ///Movie Details Database
-    movieModel.getMovieDetailsDatabase(widget.movieId).listen((movie){
-      setState(() {
-        print("Movie Detail insertion into view layer ===============> ${movie}");
-        movieDetails = movie;
-        imageView = movie?.posterPath;
-      });
-    }).onError((error){
-      debugPrint("Movie Details Database Error ${error.toString()}");
-    });
-
-    ///Credits By Movie
-    // movieModel.getCreditsByMovie(widget.movieId).then((castInfo){
-    //   setState(() {
-    //     cast = castInfo;
-    //   });
-    //   ///Credits By Movie Database
-    //   movieModel.getCreditsByMovieDatabase(widget.movieId).then((castData){
-    //     setState(() {
-    //       //cast = castData.cast<ActorVO>();
-    //       print("Get data from hive in view layer ${castData.actorList}");
-    //       cast = castData.actorList;
-    //     });
-    //   }).catchError((error){
-    //     debugPrint("Credits By Movie Database Error ==========> ${error.toString()}");
-    //   });
-    // }).catchError((error){
-    //   debugPrint("Credits By Movie Error ==========> ${error.toString()}");
-    // });
-
-
-    // ///Credits By Movie Database
-    movieModel.getCreditsByMovieDatabase(widget.movieId).listen((castData){
-      setState(() {
-       //cast = castData.cast<ActorVO>();
-        print("Get data from hive in view layer ${castData?.actorList}");
-          cast = castData?.actorList;
-      });
-    }).onError((error){
-      debugPrint("Credits By Movie Database Error ==========> ${error.toString()}");
-    });
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: CustomScrollView(
-                slivers: [
-                  AppBarScreenView(
-                    //image: movieDetails?.posterPath ?? "",
-                    image: imageView ?? "",
+    return ChangeNotifierProvider(
+      create: (context) => MovieDetailPageBloc(widget.movieId,widget.isNowPlaying),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Selector<MovieDetailPageBloc,MovieVO>(
+          selector: (context,bloc) => bloc.movieDetails ?? MovieVO.emptySituation(),
+          builder: (context,movie,child) =>
+           Container(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: CustomScrollView(
+                    slivers: [
+                      Selector<MovieDetailPageBloc,String>(
+                        selector: (context,bloc) => bloc.imageView ?? "",
+                        builder: (context,image,child) =>
+                         AppBarScreenView(
+                          //image: movieDetails?.posterPath ?? "",
+                          image: image,
+                        ),
+                      ),
+                      SliverList(
+                        delegate: SliverChildListDelegate([
+                          Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.only(
+                                bottom: MARGIN_MEDIUM_3,
+                                left: MARGIN_MEDIUM_3,
+                                right: MARGIN_MEDIUM_3),
+                            child: MovieInfoView(
+                                name: movie.title ?? "",
+                              totalTime: movie.runTimeShowDetail(movie.runtime ?? 0),
+                              rating: movie.voteAverage ?? 0.0,
+                              genreList: movie.genreSeparatedList(),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.only(
+                                left: MARGIN_MEDIUM_3,
+                                top: MARGIN_MEDIUM,
+                                bottom: MARGIN_MEDIUM,
+                                right: MARGIN_MEDIUM_3),
+                            child: MoviePlotView(
+                              summaryData: movie.overView ?? "",
+                            ),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.only(
+                                top: MARGIN_MEDIUM_3,
+                                bottom: MARGIN_XXLARGE_3X,
+                            ),
+                            child: Selector<MovieDetailPageBloc,List<ActorVO>>(
+                              selector: (context,bloc) => bloc.cast ?? [],
+                              builder: (context,actors,child) =>
+                               CastView(
+                                actorList: actors,
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ),
+                    ],
                   ),
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(
-                            bottom: MARGIN_MEDIUM_3,
-                            left: MARGIN_MEDIUM_3,
-                            right: MARGIN_MEDIUM_3),
-                        child: MovieInfoView(
-                            name: movieDetails?.title ?? "",
-                          totalTime: movieDetails?.runTimeShowDetail(movieDetails?.runtime ?? 0) ?? "",
-                          rating: movieDetails?.voteAverage ?? 0.0,
-                          genreList: movieDetails?.genreSeparatedList() ?? [],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(
-                            left: MARGIN_MEDIUM_3,
-                            top: MARGIN_MEDIUM,
-                            bottom: MARGIN_MEDIUM,
-                            right: MARGIN_MEDIUM_3),
-                        child: MoviePlotView(
-                          summaryData: movieDetails?.overView ?? "",
-                        ),
-                      ),
-                      Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.only(
-                            //left: MARGIN_MEDIUM_3,
-                            top: MARGIN_MEDIUM_3,
-                            //right: MARGIN_MEDIUM_3,
-                            bottom: MARGIN_XXLARGE_3X,
-                        ),
-                        child: CastView(
-                          actorList: cast ?? [],
-                        ),
-                      ),
-                    ]),
+                ),
+                Positioned(
+                  bottom: 50,
+                  left: 20,
+                  right: 20,
+                  child: GetTicketButtonView(
+                      onClick: ()=> _navigateToNextScreen(context,widget.movieId,movie.title ?? "",movie.posterPath ?? ""),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 50,
-              left: 20,
-              right: 20,
-              child: GetTicketButtonView(
-                  onClick: ()=> _navigateToNextScreen(context,widget.movieId,movieDetails?.title ?? "",imageView ?? ""),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

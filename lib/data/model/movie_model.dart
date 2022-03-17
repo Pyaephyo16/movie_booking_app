@@ -13,10 +13,10 @@ import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
 
 abstract class MovieModel{
   ///Network
-  Future<UserVO> postRegisterWithEmail(String name,String email,String phone,String password,String googlAccessToken,String facebookAccessToken);
-  Future<UserVO> postLoginWithEmail(String email,String password);
-  Future<UserVO> postLoginWithGoogle(String token);
-  Future<UserVO> postLoginWithFacebook(String token);
+  Future<void> postRegisterWithEmail(String name,String email,String phone,String password,String googlAccessToken,String facebookAccessToken);
+  Future<void> postLoginWithEmail(String email,String password);
+  Future<void> postLoginWithGoogle(String token);
+  Future<void> postLoginWithFacebook(String token);
   Future<void> postLogout();
   void getNowPlayingMovies();
   void getComingSoonMovies();
@@ -36,10 +36,10 @@ abstract class MovieModel{
   Future<void> logoutUserInfoDatabase();
   Stream<List<MovieVO>> getNowPlayingMovieDatabase();
   Stream<List<MovieVO>> getComingSoonMovieDatabase();
-  Stream<MovieVO?> getMovieDetailsDatabase(int movieId);
+  Stream<MovieVO?> getMovieDetailsDatabase(int movieId,bool isNowPlaying);
   Stream<List<SnackVO>?> getSnacksFromDatabase();
   Stream<List<PaymentVO>> getPaymentMethodFromDatabase();
-   Stream<List<CardVO>> getCardsFromProfileDatabase();
+   Stream<UserVO?> getCardsFromProfileDatabase();
 
   Stream<ActorListForHiveVO?> getCreditsByMovieDatabase(int movieId);
   Stream<CinemaListForHiveVO?> getCinemaDayTimeslotDatabase(String date);

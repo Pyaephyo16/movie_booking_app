@@ -17,6 +17,10 @@ UserDao._internal();
         return getUserBox().put(userInfo.id, userInfo);
   }
 
+  Future<void> saveUserInfoFuture(UserVO userInfo){
+      return getUserBox().put(userInfo.id, userInfo);
+  }
+
 
   List<UserVO> getUserInfo(){
     return getUserBox().values.toList();

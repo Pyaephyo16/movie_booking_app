@@ -1,11 +1,12 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/timeslot_vo.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'user_select_vo.g.dart';
 
 @JsonSerializable()
-class UserSelectVO{
+class UserSelectVO {
 
   @JsonKey(name: "id")
     int? id;
@@ -45,6 +46,7 @@ class UserSelectVO{
 
   UserSelectVO.start();
 
+UserSelectVO.emptySituation();
 
   UserSelectVO(
       this.id,
@@ -63,4 +65,9 @@ class UserSelectVO{
   factory UserSelectVO.fromJson(Map<String,dynamic> json) => _$UserSelectVOFromJson(json);
 
   Map<String,dynamic> toJson() => _$UserSelectVOToJson(this);
+
+  @override
+  String toString() {
+    return 'UserSelectVO(id: $id, bookingNo: $bookingNo, bookingDate: $bookingDate, row: $row, seat: $seat, totalSeat: $totalSeat, total: $total, movieId: $movieId, cinemaId: $cinemaId, userName: $userName, timeslot: $timeslot, snacks: $snacks)';
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hw3_movie_booking_app/blocs/payment_screen_bloc.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/checkout_request_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
@@ -14,12 +15,12 @@ import 'package:hw3_movie_booking_app/resources/dimens.dart';
 import 'package:hw3_movie_booking_app/resources/strings.dart';
 import 'package:hw3_movie_booking_app/widgets/button_view.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
-class PaymentScreen extends StatefulWidget {
+class PaymentScreen extends StatelessWidget {
 
   final int seatCost;
   final int snackCost;
-  final String token;
   final String dateData;
   final int userChoosedayTimeslotId;
   final int movieId;
@@ -35,7 +36,6 @@ class PaymentScreen extends StatefulWidget {
   PaymentScreen({
     required this.seatCost,
     required this.snackCost,
-    required this.token,
     required this.dateData,
     required this.userChoosedayTimeslotId,
     required this.movieId,
@@ -49,209 +49,115 @@ class PaymentScreen extends StatefulWidget {
   });
 
   @override
-  _PaymentScreenState createState() => _PaymentScreenState();
-}
-
-class _PaymentScreenState extends State<PaymentScreen> {
-
-
-
-  ///Movie Model
-  MovieModel movieModel = MovieModelImpl();
-
-  ///State Variables
-  List<CardVO>? profile;
-  CardVO? userChoose;
-  //CardVO? forFirst;
-
-  ///Test
-  CheckoutRequestVO? userData;
-  UserSelectVO? boucherData;
-
-  int? finalCost;
-  int? cardId;
-
-  @override
-  void initState() {
-
-
-    ///Get Profile
-    // movieModel.getProfile().then((data){
-    //   setState(() {
-    //     profile = data?.cards;
-    //   });
-    //   if(profile?.isNotEmpty ?? false){
-    //     userChoose = profile?[0];
-    //   }
-    // }).catchError((error){
-    //   debugPrint("GET Profile Error ============> ${error.toString()}");
-    // });
-
-
-    ///Get All profile database
-    movieModel.getCardsFromProfileDatabase().listen((value){
-      setState(() {
-        print("All cards in view layer ===================> ${value}");
-          profile = value;
-      });
-      if(profile?.isNotEmpty ?? false){
-        userChoose = profile?[0];
-      }
-    }).onError((error){
-      debugPrint("Get All Cards From Profile Database Error ============> ${error.toString()}");
-    });
-
- 
-    super.initState();
-  }
-
-
-  doCheckout(CheckoutRequestVO userData,String imageView,String movieName,String userChooseCinema){
-    ///Post Checkout
-    movieModel.checkout(userData).then((data){
-      setState(() {
-        boucherData = data;
-      });
-      _navigateToNextScreen(context,BoucherScreen(
-        movieName: movieName,
-        userChooseCinema: userChooseCinema,
-        imageView: imageView,
-        boucherData: boucherData ?? UserSelectVO.start(),
-      ));
-    }).catchError((error){
-      debugPrint("Checkout Error =========> ${error.toString()}");
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        toolbarHeight: MARGIN_XXLARGE_0,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: (){
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.chevron_left,size: MARGIN_XXLARGE_0X,color: SNAP_SCREEN_POP_ICON_BUTTON_COLOR,),
+    return ChangeNotifierProvider(
+      create: (context) => PaymentScreenBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          toolbarHeight: MARGIN_XXLARGE_0,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.chevron_left,size: MARGIN_XXLARGE_0X,color: SNAP_SCREEN_POP_ICON_BUTTON_COLOR,),
+          ),
         ),
-      ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(top: MARGIN_MEDIUM_3),
-        child: Stack(
-          children: [
-            Positioned.fill(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    PayAmountView(
-                      widget.seatCost,
-                      widget.snackCost,
-                    ),
-                    SizedBox(height: MARGIN_MEDIUM_2,),
-                    CardSectionView(
-                      profile: profile ?? [],
-                      takeData: (index){
-                       setState(() {
-                         userChoose = profile?[index];
-                       });
-                      },
-                    ),
-                    SizedBox(height: MARGIN_MEDIUM_3),
-                    // OutlineButton(onPressed: (){
-                    //     movieModel.deleteAllCards();
-                    // },
-                    // child: Text("Clear"),
-                    // ),
-                    Padding(
-                      padding: EdgeInsets.only(left: MARGIN_MEDIUM_3,right: MARGIN_MEDIUM_3),
-                      child: AddNewCardView(
-                        onClick: ()=> _navigateToNextScreen(context,PaymentInfoScreen(token: widget.token)),
+        body: Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(top: MARGIN_MEDIUM_3),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PayAmountView(
+                        seatCost,
+                        snackCost,
                       ),
-                    ),
-                  ],
+                      SizedBox(height: MARGIN_MEDIUM_2,),
+                      Selector<PaymentScreenBloc,List<CardVO>>(
+                        selector: (context,bloc) => bloc.profile ?? [],
+                        builder: (context,profile,child) =>
+                         CardSectionView(
+                          profile: profile,
+                          takeData: (index){
+                          PaymentScreenBloc _cardBloc = Provider.of(context,listen: false);
+                          _cardBloc.userSelectionCard(index);
+                          },
+                        ),
+                      ),
+                      SizedBox(height: MARGIN_MEDIUM_3X),
+                      // OutlineButton(onPressed: (){
+                      //     movieModel.deleteAllCards();
+                      // },
+                      // child: Text("Clear"),
+                      // ),
+                      Padding(
+                        padding: EdgeInsets.only(left: MARGIN_MEDIUM_3,right: MARGIN_MEDIUM_3),
+                        child: AddNewCardView(
+                          onClick: ()=> _navigateToNextScreen(context,PaymentInfoScreen()),
+                        ),
+                      ),
+                    ],
+                  ),
+              ),
+    
+              Positioned(
+                bottom: MARGIN_XXLARGE_2X,
+                left: MARGIN_MEDIUM_4,
+                right: MARGIN_MEDIUM_4,
+    
+                child:
+                 Selector<PaymentScreenBloc,UserSelectVO>(
+                  selector: (context,bloc) => bloc.boucherData ?? UserSelectVO.emptySituation(),
+                    builder: (context,boucherData,child) =>
+                //       GestureDetector(
+                //       onTap: (){
+                //         PaymentScreenBloc _finalDataBloc = Provider.of<PaymentScreenBloc>(context,listen: false);
+                //         _finalDataBloc.userFinalSelection(widget.snackCost, widget.seatCost,
+                //         widget.userChoosedayTimeslotId,widget.totalRow,widget.totalSeat,widget.dateData,
+                //      widget.movieId,widget.cinemaId,widget.snackListBought,
+                //         ).then((event) {
+                //         print("Listen for output 1 ============> ${event}");
+                //         print("Listen for output  2============> ${_finalDataBloc.boucherData}");
+                //         print("Listen for output 3 ============> ${boucherData}");
+                //           _navigateToNextScreen(context,BoucherScreen(
+                //          movieName: widget.movieName,
+                //         userChooseCinema: widget.userChooseCinema,
+                //           imageView: widget.imageView,
+                //     boucherData: _finalDataBloc.boucherData ?? UserSelectVO.emptySituation(),
+                //  ));
+                //         });      
+                //       },
+                //       child: Container(
+                //         width: double.infinity,
+                //         height: BUTTON_HEIGHT,
+                //         decoration: BoxDecoration(
+                //           color: PRIMARY_COLOR,
+                //           borderRadius: BorderRadius.circular(MARGIN_SMALL),
+                //         ),
+                //         child: Center(
+                //           child: Text(
+                //             "Confirm",
+                //             style: TextStyle(
+                //               color: Colors.white,
+                //               fontWeight: FontWeight.w600,
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //      ),
+                ButtonAction(
+                  onClick: onTapAction,
+                  
                 ),
-            ),
-
-            Positioned(
-              bottom: MARGIN_XXLARGE_2X,
-              left: MARGIN_MEDIUM_4,
-              right: MARGIN_MEDIUM_4,
-
-              child: GestureDetector(
-                onTap: (){
-                   finalCost = widget.snackCost+widget.seatCost;
-                   cardId = userChoose?.id;
-                  print("Cinema Id Check =======> ${cardId}");
-
-
-                  CheckoutRequestVO userData = CheckoutRequestVO(widget.userChoosedayTimeslotId, widget.totalRow, widget.totalSeat, widget.dateData.split(" ")[0],
-                      finalCost, widget.movieId, cardId, widget.cinemaId,
-                      widget.snackListBought.length ==0 ? [] : widget.snackListBought,
-                  );
-
-
-                  print("Data For checkout =======> ${userData.cinemaDayTimeslotId}");
-                  print("Data For checkout =======> ${userData.row}");
-                  print("Data For checkout =======> ${userData.seatNumber}");
-                  print("Data For checkout =======> ${userData.bookingDate}");
-                  print("Data For checkout =======> ${userData.totalPrice}");
-                  print("Data For checkout =======> ${userData.movieId}");
-                  print("Data For checkout =======> ${userData.cardId}");
-                  print("Data For checkout =======> ${userData.cinemaId}");
-                  print("Data For checkout =======> ${userData.snacks}");
-                  print("ImageTest ===========> ${widget.imageView}");
-
-                   doCheckout(
-                       userData,
-                     widget.imageView,
-                     widget.movieName,
-                     widget.userChooseCinema,
-                   );
-
-
-
-                  // _navigateToNextScreen(context,BoucherScreen(
-                  //   // token: widget.token,
-                  //   // dateData: widget.dateData,
-                  //   // userChoosedayTimeslotId: widget.userChoosedayTimeslotId,
-                  //   // movieId: widget.movieId,
-                  //   // cinemaId: widget.cinemaId,
-                  //   // totalSeat: widget.totalSeat,
-                  //   // totalRow: widget.totalRow,
-                  //   // snackListBought: widget.snackListBought,
-                  //   // finalCost: finalCost ?? 0,
-                  //   // cardId: cardId ?? 0,
-                  //   movieName: widget.movieName,
-                  //   userChooseCinema: widget.userChooseCinema,
-                  //   imageView: widget.imageView,
-                  //   boucherData: boucherData ?? UserSelectVO.start(),
-                  // ));
-
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: BUTTON_HEIGHT,
-                  decoration: BoxDecoration(
-                    color: PRIMARY_COLOR,
-                    borderRadius: BorderRadius.circular(MARGIN_SMALL),
-
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Confirm",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -272,9 +178,61 @@ class _PaymentScreenState extends State<PaymentScreen> {
     //                       }).catchError((error){
     //                         debugPrint("GET Profile Error Rrfresh ============> ${error.toString()}");
     //                       });
-
     //                     }
     //                 });
+  }
+
+  onTapAction(BuildContext context){
+     PaymentScreenBloc _finalDataBloc = Provider.of<PaymentScreenBloc>(context,listen: false);
+                        _finalDataBloc.userFinalSelection(snackCost, seatCost,
+                        userChoosedayTimeslotId,totalRow,totalSeat,dateData,
+                     movieId,cinemaId,snackListBought,
+                        ).then((event) {
+                        print("Listen for output 1 ============> ${event}");
+                        print("Listen for output  2============> ${_finalDataBloc.boucherData}");
+                        //print("Listen for output 3 ============> ${boucherData}");
+
+                          _navigateToNextScreen(context,BoucherScreen(
+                         movieName: movieName,
+                        userChooseCinema: userChooseCinema,
+                          imageView: imageView,
+                    boucherData: _finalDataBloc.boucherData ?? UserSelectVO.emptySituation(),
+                 ));
+                        });
+  }
+}
+
+class ButtonAction extends StatelessWidget {
+
+  final Function(BuildContext context) onClick;
+
+  ButtonAction({required this.onClick});
+
+  @override
+  Widget build(BuildContext context) {
+    return  GestureDetector(
+                      onTap: (){
+                        onClick(context);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: BUTTON_HEIGHT,
+                        decoration: BoxDecoration(
+                          color: PRIMARY_COLOR,
+                          borderRadius: BorderRadius.circular(MARGIN_SMALL),
+                      
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Confirm",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                     );
   }
 }
 
@@ -311,11 +269,6 @@ AddNewCardView({required this.onClick});
 }
 
 class CardSectionView extends StatelessWidget {
-  //  CardSectionView({
-  //   required this.items,
-  // });
-  //
-  // final List<Widget> items;
 
   final List<CardVO> profile;
   final Function(int) takeData;
@@ -349,13 +302,6 @@ class CardSectionView extends StatelessWidget {
 }
 
 class PaymentCardView extends StatelessWidget {
-
-  // final String logo;
-  // final String owner;
-  // final String expire;
-  // final Color color;
-  //
-  // PaymentCardView({required this.logo,required this.owner,required this.expire,required this.color});
 
   final CardVO data;
 

@@ -52,50 +52,58 @@ class MovieModelImpl extends MovieModel{
     return "Bearer ${userToken}";
   }
 
+  String getUserTokenFromDatabaseForCards(){
+    List<UserVO> foruserToken = mUserDao.getUserBox().values.toList();
+
+    String userToken = foruserToken[0].token ?? "";
+    return  userToken;
+  }
+
 
   ///Network
   @override
-  Future<UserVO> postRegisterWithEmail(String name, String email, String phone, String password,String googlAccessToken,String facebookAccessToken) {
+  Future<void> postRegisterWithEmail(String name, String email, String phone, String password,String googlAccessToken,String facebookAccessToken) {
     print("Data register in datalayer =========> ${name}  ${phone} ${email} ${password} ${googlAccessToken} ${facebookAccessToken}");
     return _dataAgent.postRegisterWithEmail(name, email, phone, password,googlAccessToken,facebookAccessToken).then((userInfo){
       var user = userInfo?[0] as UserVO;
       user.token = userInfo?[1] as String;
-      mUserDao.saveUserInfo(user);
-      return Future.value(user);
+      //mUserDao.saveUserInfo(user);
+      mUserDao.saveUserInfoFuture(user);
+      //return Future.value(user);
     });
   }
 
   @override
-  Future<UserVO> postLoginWithEmail(String email, String password) {
+  Future<void> postLoginWithEmail(String email, String password) {
     print("Data login data layer ========> ${email} ${password}");
     return _dataAgent.postLoginWithEmail(email, password).then((userInfo){
       var user = userInfo?[0] as UserVO;
       user.token = userInfo?[1] as String;
       print("Check insert data into database ==========> ${user}");
-      mUserDao.saveUserInfo(user);
-      return Future.value(user);
+      //mUserDao.saveUserInfo(user);
+        mUserDao.saveUserInfoFuture(user);
     });
   }
 
   @override
-  Future<UserVO> postLoginWithGoogle(String token) {
+  Future<void> postLoginWithGoogle(String token) {
     print("Google login data layer ===========> ${token}");
     return _dataAgent.postLoginWithGoogle(token).then((userInfo){
       var user = userInfo?[0] as UserVO;
       user.token = userInfo?[1] as String;
-      mUserDao.saveUserInfo(user);
-      return Future.value(user);
+      mUserDao.saveUserInfoFuture(user);
+      //return Future.value(user);
     });
   }
 
   @override
-  Future<UserVO> postLoginWithFacebook(String token) {
+  Future<void> postLoginWithFacebook(String token) {
     print("Facebook login data layer ===========> ${token}");
     return _dataAgent.postLoginWithFacebook(token).then((userInfo) {
       var user = userInfo?[0] as UserVO;
       user.token = userInfo?[1] as String;
-      mUserDao.saveUserInfo(user);
-      return Future.value(user);
+      mUserDao.saveUserInfoFuture(user);
+      //return Future.value(user);
     });
   }
 
@@ -249,18 +257,31 @@ class MovieModelImpl extends MovieModel{
   }
 
 
+  // @override
+  // Future<UserVO?> getProfile() {
+  //   return _dataAgent.getProfile(getUserTokenFromDatabase()).then((value){
+  //     print("All cards put into database ======================> ${value?.cards}");
+  //     cardDao.getCardsFromProfileDatabase(value?.cards ?? []);
+  //     return Future.value(value);
+  //   });
+  // }
   @override
   Future<UserVO?> getProfile() {
     return _dataAgent.getProfile(getUserTokenFromDatabase()).then((value){
       print("All cards put into database ======================> ${value?.cards}");
-      cardDao.getCardsFromProfileDatabase(value?.cards ?? []);
+      var user = mUserDao.getUserBox().values.toList();
+      String tokenData = user.first.token ?? "";
+      var profileUserData = value as UserVO;
+      profileUserData.token = tokenData;
+      print("Token tosave data into database =================> ${tokenData}");
+      cardDao.getCardsFromProfileDatabase(profileUserData);
       return Future.value(value);
     });
   }
 
   @override
   Future<UserSelectVO?> checkout( CheckoutRequestVO checkoutRequest) {
-    return _dataAgent.checkout(getUserTokenFromDatabase(), checkoutRequest);
+    return _dataAgent.checkout(getUserTokenFromDatabase(),checkoutRequest);
   }
 
 
@@ -286,13 +307,19 @@ class MovieModelImpl extends MovieModel{
   }
 
   @override
-  Stream<List<CardVO>> getCardsFromProfileDatabase() {
+  Stream<UserVO?> getCardsFromProfileDatabase() {
     //return Future.value(cardDao.getAllCards());
+    print("Token for cards output check ==================> ${getUserTokenFromDatabaseForCards()}");
+     //print("Ouput cards fromdatabase ================> ${cardDao.getAllCardsData(getUserTokenFromDatabaseForCards())}");
     this.getProfile();
     return cardDao
     .getAllCardsEventStream()
-    .startWith(cardDao.getAllCardsStream())
-    .map((event) => cardDao.getAllCardsData());
+    .startWith(cardDao.getAllCardsStream(getUserTokenFromDatabaseForCards()))
+    .map((event) => cardDao.getAllCardsData(getUserTokenFromDatabaseForCards()));
+      // return cardDao
+      // .getAllCardsEventStream()
+      // .startWith(cardDao.getAllCardsStream(tokenData))
+      // .map((event) => cardDao.getAllCardsData(tokenData));
   }
 
   @override
@@ -324,11 +351,11 @@ class MovieModelImpl extends MovieModel{
   }
 
   @override
-  Stream<MovieVO?> getMovieDetailsDatabase(int movieId) {
+  Stream<MovieVO?> getMovieDetailsDatabase(int movieId,bool isNowPlaying) {
     //return Future.value(mMovieDao.getSingleMovie(movieId));
       this.getMovieDetails(movieId);
-      this.getNowPlayingMovieDatabase();
-      this.getComingSoonMovieDatabase();
+      isNowPlaying == true ? this.getNowPlayingMovieDatabase() :  this.getComingSoonMovieDatabase();
+     
       return mMovieDao
       .getAllMoviesEventStream()
       .startWith(mMovieDao.getSingleMovieStream(movieId))
@@ -345,7 +372,7 @@ class MovieModelImpl extends MovieModel{
     return mActorDao
     .getActorEventStream()
     .startWith(mActorDao.getAllActorsStream(movieId))
-    .map((event) => mActorDao.getAllActorsStream(movieId));
+    .map((event) => mActorDao.getAllActorsData(movieId));
   }
 
   @override
@@ -376,6 +403,7 @@ class MovieModelImpl extends MovieModel{
       // return Future.value(
       //   paymentMethodDao.getAllPaymentMethod()
       // );
+     
       this.getPaymentMethod();
       return paymentMethodDao
       .getAllPaymentMethodEventStream()

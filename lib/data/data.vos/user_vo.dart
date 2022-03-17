@@ -40,6 +40,7 @@ class UserVO {
   @HiveField(7)
   String? token;
 
+  UserVO.emptySituation();
 
   UserVO(this.id, this.name, this.email, this.phone, this.totalExpense,
       this.profileImage, this.cards, this.token);
@@ -47,9 +48,6 @@ class UserVO {
   factory UserVO.fromJson(Map<String,dynamic> json) => _$UserVOFromJson(json);
 
   Map<String,dynamic> toJson() => _$UserVOToJson(this);
-
-
-  
 
   @override
   String toString() {

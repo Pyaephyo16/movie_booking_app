@@ -29,13 +29,17 @@ class ActorDao{
     return getActorBox().watch();
   }
 
-  ActorListForHiveVO? getAllActorsStream(int movieId){
+  ActorListForHiveVO? getAllActorsData(int movieId){
       if(getAllActors(movieId) != null ){
         print("Actor list in database ==========> ${getAllActors(movieId)}");
         return getAllActors(movieId);
       }else{
         return ActorListForHiveVO.emptySituation();
       }
+  }
+
+  Stream<ActorListForHiveVO?> getAllActorsStream(int movieId){
+        return Stream.value(getAllActors(movieId));
   }
 
   Box<ActorListForHiveVO> getActorBox(){

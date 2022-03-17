@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:hw3_movie_booking_app/blocs/snack_screen_page_bloc.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/payment_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
@@ -9,11 +10,11 @@ import 'package:hw3_movie_booking_app/resources/colors.dart';
 import 'package:hw3_movie_booking_app/resources/dimens.dart';
 import 'package:hw3_movie_booking_app/resources/strings.dart';
 import 'package:hw3_movie_booking_app/widgets/button_view.dart';
+import 'package:provider/provider.dart';
 
-class SnapScreen extends StatefulWidget {
+class SnapScreen extends StatelessWidget {
 
   final int cost;
-  final String token;
   final String dateData;
   final int userChoosedayTimeslotId;
   final int movieId;
@@ -26,7 +27,6 @@ class SnapScreen extends StatefulWidget {
 
   SnapScreen({
     required this.cost,
-    required this.token,
     required this.dateData,
     required this.userChoosedayTimeslotId,
     required this.movieId,
@@ -38,231 +38,189 @@ class SnapScreen extends StatefulWidget {
     required this.imageView,
   });
 
-  @override
-  _SnapScreenState createState() => _SnapScreenState();
-}
+//   @override
+//   _SnapScreenState createState() => _SnapScreenState();
+// }
 
-class _SnapScreenState extends State<SnapScreen> {
-
-
-  ///Movie Model
-  MovieModel movieModel = MovieModelImpl();
-
-  ///State Variable
-  List<SnackVO>? snackList;
-  List<PaymentVO>? cards;
-  List<int> newCost = [];
-  int donedone = 0;
-  int totalamount = 0;
-
- List<SnackVO> snackListBought = [];
-
-  @override
-  void initState() {
-    // ///Get Snack List
-    // movieModel.getSnackList("Bearer ${widget.token}").then((snacks){
-    //   setState(() {
-    //     snackList = snacks;
-    //   });
-    // }).catchError((error){
-    //   debugPrint("Get Snack List Error =============> ${error.toString()}");
-    // });
-
-    ///Get Snack List Database
-    movieModel.getSnacksFromDatabase().listen((snacks){
-      setState(() {
-        print("Get all snacks into data layer ==================> ${snacks}");
-        snackList = snacks;
-      });
-    }).onError((error){
-      debugPrint("Get Snack List Database Error =============> ${error.toString()}");
-    });
-
-    ///Get Payment Method
-    // movieModel.getPaymentMethod().then((cards){
-    //   setState(() {
-    //     this.cards = cards;
-    //   });
-    // }).catchError((error){
-    //   debugPrint("Get Payment Method Error ==========> ${error.toString()}");
-    // });
-
-
-    //Get Payment Method Database
-    movieModel.getPaymentMethodFromDatabase().listen((cards) {
-        setState(() {
-          print("All payment methods in view layer =================> ${cards}");
-            this.cards = cards;
-        });
-    }).onError((error){
-        debugPrint("Get Payment Method Database Error ============> ${error.toString()}");
-    });
-
-
-    super.initState();
-  }
-
+// class _SnapScreenState extends State<SnapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        toolbarHeight: 36,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: (){
-            Navigator.of(context).pop();
-          },
-          icon: Icon(
-            Icons.chevron_left,
-            size: 34,
-            color: SNAP_SCREEN_POP_ICON_BUTTON_COLOR,
+    return ChangeNotifierProvider(
+      create: (context) => SnackScreenPageBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          toolbarHeight: 36,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+            icon: Icon(
+              Icons.chevron_left,
+              size: 34,
+              color: SNAP_SCREEN_POP_ICON_BUTTON_COLOR,
+            ),
           ),
         ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsets.all(MARGIN_MEDIUM_4),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //BookingSetView(bookingList: bookingList),
-                      BookingSetView(
-                          snacks: snackList ?? [],
-                        increase: (userplus,index){
-                             totalamount = snackList![index].quantity ?? 0;
-                            setState(() {
-                              if(userplus){
-                                totalamount++;
-                                snackList![index].quantity = totalamount;
-                                newCost.add(snackList![index].price ?? 0);
-                               donedone = newCost.reduce((f, s) => f+s);
-
-                                print("Test ======> ${newCost}");
-                                print("Test ======> ${donedone}");
-                              }
-                            });
-                        },
-                        decrease: (userminus,index){
-                             totalamount = snackList![index].quantity ?? 0;
-                            setState(() {
-                              if(userminus){
-                                if(totalamount != 0){
-                                  totalamount--;
-                                }else{
-                                  totalamount;
-                                }
-                                snackList![index].quantity = totalamount;
-                                newCost.remove(snackList![index].price ?? 0);
-                                int tocut = snackList![index].price ?? 0;
-                                donedone= donedone-tocut;
-
-                                print("Test ======> ${newCost}");
-                                print("Test ======> ${donedone}");
-                              }
-                            });
-                        },
-                      ),
-                      PromoCodeView(),
-
-                      SizedBox(
-                        height: MARGIN_MEDIUM_4,
-                      ),
-                      SubTotalView(
-                        cost: widget.cost,
-                        addCost: donedone,
-                      ),
-                      SizedBox(
-                        height: MARGIN_XXLARGE,
-                      ),
-                      PaidMethodView(
-                        cards: cards ?? [],
-                        chooseCard: (choosen,index){
-                            setState(() {
-                                cards?.forEach((element) {
-                                  element.isSelected = false;
-                                });
-                                cards?[index].isSelected = true;
-                            });
-                        },
-                      ),
-                    ],
+        body: Container(
+          color: Colors.white,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.all(MARGIN_MEDIUM_4),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Selector<SnackScreenPageBloc,List<SnackVO>>(
+                          selector: (context,bloc) => bloc.snackList ?? [],
+                          builder: (context,snackList,child) =>
+                           Selector<SnackScreenPageBloc,int>(
+                               selector: (context,bloc) => bloc.isChooseCard,
+                               builder: (context,totalamount,child) =>
+                              BookingSetView(
+                                snacks: snackList,
+                              increase: (userplus,index){
+                                  if(userplus){
+                                    SnackScreenPageBloc _increaseBloc = Provider.of(context,listen: false);
+                                  _increaseBloc.snackAdd(index);
+                                  }
+                              },
+                              decrease: (userminus,index){
+                                  if(userminus){
+                                    SnackScreenPageBloc _decreaseBloc = Provider.of(context,listen: false);
+                                    _decreaseBloc.snackMinus(index);
+                                  }
+                              },
+                                                     ),
+                           ),
+                        ),
+                        PromoCodeView(),
+    
+                        SizedBox(
+                          height: MARGIN_MEDIUM_4,
+                        ),
+                        Selector<SnackScreenPageBloc,int>(
+                          selector: (context,bloc) => bloc.donedone,
+                          builder: (context,donedone,child) =>
+                           SubTotalView(
+                            cost: cost,
+                            addCost: donedone,
+                          ),
+                        ),
+                        SizedBox(
+                          height: MARGIN_XXLARGE,
+                        ),
+                        Selector<SnackScreenPageBloc,List<PaymentVO>>(
+                          selector: (context,bloc) => bloc.cards ?? [],
+                          builder: (context,cards,child) =>
+                           Selector<SnackScreenPageBloc,int>(
+                             selector: (context,bloc) => bloc.isChooseCard,
+                             builder: (context,isChoose,child) =>
+                              PaidMethodView(
+                              cards: cards,
+                              chooseCard: (choosen,index){
+                                  SnackScreenPageBloc _choosePaymentBloc = Provider.of(context,listen: false);
+                                  _choosePaymentBloc.selectCard(index,choosen);
+                              },
+                                                     ),
+                           ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 80,
-              left: 20,
-              right: 20,
-
-             child: GestureDetector(
-                  onTap: (){
-
-                    var length = snackList?.length ?? 0;
-                    print("Snack list lenght =======> ${length}");
-                    for(int i=0;i<length;i++){
-                      var amount = snackList?[i].quantity ?? 0;
-                      print("Snack list quantity =======> ${snackList?[i].quantity}");
-                      if(amount >0){
-                            setState(() {
-                              snackListBought.add(snackList![i]);
-                              print("InserData Check ======> ${snackList![i]}");
-                              print("USer Take length ===============> ${snackListBought.length}");
-                              print("Data ===============> ${snackListBought[0].quantity}");
-                            });
-                      }
-                    }
-                        print("Image Check snack screen ========> ${widget.imageView}");
-                    _navigateToPaymentScreen(context,
-                        widget.cost,
-                        donedone,
-                        widget.token,
-                        widget.dateData,
-                      widget.userChoosedayTimeslotId,
-                      widget.movieId,
-                      widget.cinemaId,
-                      widget.totalSeat,
-                      widget.totalRow,
-                        snackListBought,
-                      widget.movieName,
-                      widget.userChooseCinema,
-                      widget.imageView,
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: BUTTON_HEIGHT,
-                    decoration: BoxDecoration(
-                      color: PRIMARY_COLOR,
-                      borderRadius: BorderRadius.circular(MARGIN_SMALL),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Pay \$${widget.cost+donedone}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+              Positioned(
+                bottom: 80,
+                left: 20,
+                right: 20,
+    
+               child: Selector<SnackScreenPageBloc,List<SnackVO>>(
+                 selector: (context,bloc) => bloc.snackListBought,
+                 builder: (context,snackListBought,child) =>
+                  Selector<SnackScreenPageBloc,int>(
+                    selector: (context,bloc) => bloc.donedone,
+                    builder: (context,donedone,child) =>
+                    //  GestureDetector(
+                    //     onTap: (){
+                    //         SnackScreenPageBloc _userTakeAction = Provider.of(context,listen: false);
+                    //         _userTakeAction.userTakenSnack().listen((event) =>
+                    //       _navigateToPaymentScreen(context,
+                    //           widget.cost,
+                    //           donedone,
+                    //           widget.dateData,
+                    //         widget.userChoosedayTimeslotId,
+                    //         widget.movieId,
+                    //         widget.cinemaId,
+                    //         widget.totalSeat,
+                    //         widget.totalRow,
+                    //           snackListBought,
+                    //         widget.movieName,
+                    //         widget.userChooseCinema,
+                    //         widget.imageView,
+                    //       ),
+                    //         );
+                    //     },
+                    //     child: Container(
+                    //       width: double.infinity,
+                    //       height: BUTTON_HEIGHT,
+                    //       decoration: BoxDecoration(
+                    //         color: PRIMARY_COLOR,
+                    //         borderRadius: BorderRadius.circular(MARGIN_SMALL),
+                    //       ),
+                    //       child: Center(
+                    //         child: Text(
+                    //           "Pay \$${widget.cost+donedone}",
+                    //           style: TextStyle(
+                    //             color: Colors.white,
+                    //             fontWeight: FontWeight.w600,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    ButtonActionView(
+                     title: "Pay \$ ${cost+donedone}",
+                     donedone: donedone,
+                     snackListBought: snackListBought,
+                     onClick: onTapAction,
+                     ),
                   ),
-                )
-            ),
-          ],
+               )
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  onTapAction(BuildContext context,int donedone,List<SnackVO> snackListBought){
+      SnackScreenPageBloc _userTakeAction = Provider.of(context,listen: false);
+                            _userTakeAction.userTakenSnack().listen((event) =>
+                          _navigateToPaymentScreen(context,
+                              cost,
+                              donedone,
+                              dateData,
+                            userChoosedayTimeslotId,
+                           movieId,
+                            cinemaId,
+                            totalSeat,
+                            totalRow,
+                              snackListBought,
+                            movieName,
+                            userChooseCinema,
+                            imageView,
+                          ),
+                            );
+  }
 
-  Future<dynamic> _navigateToPaymentScreen(BuildContext context,int seatCost,int snackCost,String token,
+
+  Future<dynamic> _navigateToPaymentScreen(BuildContext context,int seatCost,int snackCost,
       String dateData,int userChoosedayTimeslotId,int movieId,int cinemaId,String totalSeat,String totalRow,
       List<SnackVO> snackListBought,String movieName,String userChooseCinema,String imageView,
       ) {
@@ -271,7 +229,6 @@ class _SnapScreenState extends State<SnapScreen> {
       MaterialPageRoute(builder: (BuildContext context) => PaymentScreen(
         seatCost: seatCost,
         snackCost: snackCost,
-        token: token,
         dateData: dateData,
         userChoosedayTimeslotId: userChoosedayTimeslotId,
         movieId: movieId,
@@ -284,6 +241,42 @@ class _SnapScreenState extends State<SnapScreen> {
         imageView: imageView,
       )),
     );
+  }
+}
+
+class ButtonActionView extends StatelessWidget {
+
+final String title;
+final int donedone;
+final List<SnackVO> snackListBought;
+final Function(BuildContext context,int donedone,List<SnackVO> snackListBought) onClick;
+
+ButtonActionView({required this.title,required this.donedone,required this.snackListBought,required this.onClick});
+
+  @override
+  Widget build(BuildContext context) {
+    return    GestureDetector(
+                        onTap: (){
+                            onClick(context,donedone,snackListBought);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: BUTTON_HEIGHT,
+                          decoration: BoxDecoration(
+                            color: PRIMARY_COLOR,
+                            borderRadius: BorderRadius.circular(MARGIN_SMALL),
+                          ),
+                          child: Center(
+                            child: Text(
+                              title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
   }
 }
 
@@ -310,27 +303,6 @@ class PaidMethodView extends StatelessWidget {
         SizedBox(
           height: MARGIN_MEDIUM_3,
         ),
-        // PaymentMethodView(
-        //   Icon(Icons.credit_card_rounded),
-        //   cards[0].name ?? "",
-        //   cards[0].description ?? "",
-        // ),
-        // SizedBox(
-        //   height: MARGIN_MEDIUM_2,
-        // ),
-        // PaymentMethodView(
-        //   Icon(Icons.credit_card_sharp),
-        //   cards[1].name ?? "",
-        //   cards[1].description ?? "",
-        // ),
-        // SizedBox(
-        //   height: MARGIN_MEDIUM_2,
-        // ),
-        // PaymentMethodView(
-        //   Icon(Icons.account_balance_wallet_outlined),
-        //   cards[2].name ?? "",
-        //   cards[2].description ?? "",
-        // ),
         Container(
           child: ListView.builder(
             shrinkWrap: true,
@@ -474,11 +446,6 @@ class PromoCodeView extends StatelessWidget {
 }
 
 class BookingSetView extends StatelessWidget {
-  // BookingSetView({
-  //   required this.bookingList,
-  // });
-  //
-  // final List<BookingView> bookingList;
 
   final List<SnackVO> snacks;
   final Function(bool,int) increase;
@@ -503,14 +470,6 @@ class BookingSetView extends StatelessWidget {
 }
 
 class BookingView extends StatelessWidget {
-  // final String title;
-  // final String content;
-  // final String price;
-  // final int count;
-  // final Color countColor;
-  //
-  // BookingView(this.title, this.content, this.price, this.count,
-  //     {this.countColor = Colors.grey});
 
   final SnackVO snack;
   final Function(bool) increase;

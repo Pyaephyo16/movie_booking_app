@@ -49,7 +49,7 @@ Hive.registerAdapter(PaymentMethodVOAdapter());
 
 
 await Hive.openBox<UserVO>(BOX_NAME_USER_VO);
-await Hive.openBox<CardVO>(BOX_NAME_CARD_VO);
+await Hive.openBox<UserVO>(BOX_NAME_CARD_VO);
 await Hive.openBox<MovieVO>(BOX_NAME_MOVIE_VO);
 await Hive.openBox<ActorListForHiveVO>(BOX_NAME_ACTOR_VO);
 await Hive.openBox<CollectionVO>(BOX_NAME_COLLECTION_VO);

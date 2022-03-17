@@ -13,7 +13,7 @@ import 'package:hw3_movie_booking_app/viewitems/DottedLineSectionView.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:intl/intl.dart';
 
-class BoucherScreen extends StatefulWidget {
+class BoucherScreen extends StatelessWidget {
 
   final String movieName;
   final String userChooseCinema;
@@ -28,36 +28,6 @@ class BoucherScreen extends StatefulWidget {
   });
 
   @override
-  _BoucherScreenState createState() => _BoucherScreenState();
-}
-
-class _BoucherScreenState extends State<BoucherScreen> {
-
-  // ///Movie Model
-  // MovieModel movieModel = MovieModelImpl();
-  //
-  // ///State Variable
-  // UserSelectVO? boucherData;
-  // CheckoutRequestVO? userData;
-  //
-  // @override
-  // void initState() {
-  //   CheckoutRequestVO userData = CheckoutRequestVO(widget.userChoosedayTimeslotId, widget.totalRow, widget.totalSeat, widget.dateData.split(" ")[0],
-  //       widget.finalCost, widget.movieId, widget.cardId, widget.cinemaId, widget.snackListBought);
-  //
-  //      movieModel.checkout("Bearer ${widget.token}",userData ?? CheckoutRequestVO.start()).then((data){
-  //        setState(() {
-  //          boucherData = data;
-  //        });
-  //      }).catchError((error){
-  //        debugPrint("Checkout Error =========> ${error.toString()}");
-  //      });
-  //
-  //
-  //   super.initState();
-  // }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -67,18 +37,7 @@ class _BoucherScreenState extends State<BoucherScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 22,),
-            //Text("${widget.imageView}"),
-            //Text("${userData?.bookingDate}"),
-              // Text("${widget.dateData}"),
-              // Text("${widget.userChoosedayTimeslotId}"),
-              // Text("${widget.movieId}"),
-              // Text("${widget.cinemaId}"),
-              // Text("${widget.totalSeat}"),
-              // Text("${widget.totalRow}"),
-              // Text("${widget.snackListBought}"),
-              // Text("${widget.finalCost}"),
-              // Text("${widget.cardId}"),
+              SizedBox(height: MARGIN_XLARGE,),
               SizedBox(height: MARGIN_XLARGE,),
               PopView(),
               SizedBox(height: MARGIN_MEDIUM_3,),
@@ -90,12 +49,12 @@ class _BoucherScreenState extends State<BoucherScreen> {
               Align(
                 alignment: Alignment.center,
                child: TicketView(
-                 image: widget.imageView,
+                 image: imageView,
                  //date: widget.dateData,
-                 date: widget.boucherData.bookingDate ?? "",
-                 movieName: widget.movieName,
-                 cinemaName: widget.userChooseCinema,
-                 boucherData: widget.boucherData,
+                 date: boucherData.bookingDate ?? "",
+                 movieName: movieName,
+                 cinemaName: userChooseCinema,
+                 boucherData:boucherData,
                ),
               ),
             ],
@@ -305,6 +264,8 @@ class MovieInfoView extends StatelessWidget {
           style: TextStyle(
             fontSize: TEXT_REGULAR_3X,
           ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: MARGIN_SMALL_1,),
         Text("105m - lMAX",

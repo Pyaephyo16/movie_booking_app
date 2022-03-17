@@ -33,7 +33,7 @@ class CheckoutRequestVO{
   @JsonKey(name: "snacks")
   List<SnackVO>? snacks;
 
-  CheckoutRequestVO.start();
+  CheckoutRequestVO.emptySituation();
 
   CheckoutRequestVO(
       this.cinemaDayTimeslotId,
