@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/seat_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
+import 'package:collection/collection.dart';
 
 class MovieSeatPageBloc extends ChangeNotifier{
 
@@ -19,7 +20,11 @@ class MovieSeatPageBloc extends ChangeNotifier{
   String? totalSeat;
   String? totalRow;
 
-  MovieSeatPageBloc(int userChoosedayTimeslotId,String dateData){
+  MovieSeatPageBloc(int userChoosedayTimeslotId,String dateData,{MovieModel? mModel}){
+
+    if(mModel != null){
+      movieModel = mModel;
+    }
 
        ///Get Cinema Seating Plan
     movieModel.getCinemaSeatingPlan(userChoosedayTimeslotId.toString(),dateData.split(" ")[0])
@@ -32,59 +37,54 @@ class MovieSeatPageBloc extends ChangeNotifier{
 
   }
 
-               void userActionTakeAndRemoveSeat(List<SeatVO> seat,int index,int cinemaDayTimeslotId,String bookingDate){
-                  // movieModel.getCinemaSeatingPlan(cinemaDayTimeslotId.toString(), bookingDate).then((value){
-                  //       if(value?[index].isSelected == false && value?[index].type != "taken") {
-                  //             value?[index].isSelected = true;
-                  //             pickTicketsCount++;
-                  //             String name = value?[index].seatName ?? "";
-                  //             pickSeatNumber.add(name);
-                  //             int price = value?[index].price??0;
-                  //             totalAmount = totalAmount+price;
-                  //             seatRow.add(value?[index].symbol ?? "");
-                  //           }else if(
-                  //           value?[index].isSelected == true && value?[index].type != "taken"){
-                  //             value?[index].isSelected = false;
-                  //             pickTicketsCount--;
-                  //             String name = value?[index].seatName ?? "";
-                  //             pickSeatNumber.remove(name);
-                  //             int price = value?[index].price??0;
-                  //             totalAmount = totalAmount-price;
-                  //             seatRow.remove(value?[index].symbol ?? "");
-                  //           }
-                  //           totalRow = seatRowSeparatedString(seatRow);
-                  //           totalSeat = seatNumbersSeparatedString(pickSeatNumber);
-                  //           fixedSeat = value;
-                  //    notifyListeners();
-                  // });
-
+ void userActionTakeAndRemoveSeat(List<SeatVO> seat,int index,int cinemaDayTimeslotId,String bookingDate){
                       if(seat[index].isSelected == false && seat[index].type != "taken") {
-                                seat[index].isSelected = true;
+                               //seat[index].isSelected = true;
+
+                            List<SeatVO>? newActionAddSeatList = fixedSeat?.mapIndexed((i, element){
+                                if(i == index){
+                                  element.isSelected = true;
+                                }
+                                return element;
+                            }).toList();
+                            fixedSeat = newActionAddSeatList;
+                            notifyListeners();
+
                                 pickTicketsCount++;
-                                String name = seat[index].seatName ?? "";
+                                String name = fixedSeat?[index].seatName ?? "";
                                 pickSeatNumber.add(name);
-                                int price = seat[index].price??0;
+                                int price = fixedSeat?[index].price??0;
                                 totalAmount = totalAmount+price;
                                 notifyListeners();
-                                seatRow.add(seat[index].symbol ?? "");
+                                seatRow.add(fixedSeat?[index].symbol ?? "");
                                 notifyListeners();
                               }
                               else if(
-                              seat[index].isSelected == true && seat[index].type != "taken"){
-                                seat[index].isSelected = false;
+                              fixedSeat?[index].isSelected == true && fixedSeat?[index].type != "taken"){
+                                //seat[index].isSelected = false;
+
+                                 List<SeatVO>? newActionRemoveSeatList = fixedSeat?.mapIndexed((i, element){
+                                if(i == index){
+                                  element.isSelected = false;
+                                }
+                                return element;
+                            }).toList();
+                            fixedSeat = newActionRemoveSeatList;
+                            notifyListeners();
+
+
                                 pickTicketsCount--;
-                                String name = seat[index].seatName ?? "";
+                                String name = fixedSeat?[index].seatName ?? "";
                                 notifyListeners();
                                 pickSeatNumber.remove(name);
-                                int price = seat[index].price??0;
+                                int price = fixedSeat?[index].price??0;
                                 totalAmount = totalAmount-price;
                                 notifyListeners();
-                                seatRow.remove(seat[index].symbol ?? "");
+                                seatRow.remove(fixedSeat?[index].symbol ?? "");
                                 notifyListeners();
                               }
                               totalRow = seatRowSeparatedString(seatRow);
                              totalSeat = seatNumbersSeparatedString(pickSeatNumber);
-                              //fixedSeat = seat;
                               notifyListeners();
                              }
 
@@ -97,7 +97,7 @@ class MovieSeatPageBloc extends ChangeNotifier{
   }
 
   String userSelectionView(List<SeatVO> seat,int index){
-    return seat[index].type == "text" ? seat[index].symbol ?? "" : seat[index].isSelected == true ? "${seat[index].id}" : "";
+    return fixedSeat?[index].type == "text" ? seat[index].symbol ?? "" : fixedSeat?[index].isSelected == true ? "${fixedSeat?[index].id}" : "";
   }
 
 }

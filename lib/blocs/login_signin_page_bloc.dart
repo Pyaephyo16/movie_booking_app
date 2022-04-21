@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-//import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
@@ -14,7 +13,15 @@ class LoginSigninPageBloc extends ChangeNotifier{
   bool isSignIn = false;
   bool isShowPassword = true;
 
-  bool? UserAccountAction(int index){
+
+  LoginSigninPageBloc({MovieModel? mModel}){
+      if(mModel != null){
+        movieModel = mModel;
+      }
+  }
+
+
+  bool? userAccountAction(int index){
                  if (index == 0) {
                   isSignIn = false;
                   notifyListeners();
@@ -67,3 +74,8 @@ class LoginSigninPageBloc extends ChangeNotifier{
     }
 
 }
+
+
+
+
+

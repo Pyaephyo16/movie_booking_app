@@ -20,4 +20,5 @@ class GetPaymentMethodResponse{
   factory GetPaymentMethodResponse.fromJson(Map<String,dynamic> json) => _$GetPaymentMethodResponseFromJson(json);
 
   Map<String,dynamic> toJson() => _$GetPaymentMethodResponseToJson(this);
+  
 }

@@ -1,12 +1,13 @@
 import 'package:hive/hive.dart';
-import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
 part 'production_company_vo.g.dart';
 
 @JsonSerializable()
 @HiveType(typeId: HIVE_TYPE_ID_PRODUCTION_COMPANY_VO,adapterName: "ProductionCompanyVOAdapter")
-class ProductionCompanyVO{
+class ProductionCompanyVO {
   @JsonKey(name: "id")
   @HiveField(0)
     int? id;
@@ -28,4 +29,23 @@ class ProductionCompanyVO{
   factory ProductionCompanyVO.fromJson(Map<String,dynamic> json) => _$ProductionCompanyVOFromJson(json);
 
   Map<String,dynamic> toJson() => _$ProductionCompanyVOToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is ProductionCompanyVO &&
+      other.id == id &&
+      other.logoPath == logoPath &&
+      other.name == name &&
+      other.originCountry == originCountry;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      logoPath.hashCode ^
+      name.hashCode ^
+      originCountry.hashCode;
+  }
 }

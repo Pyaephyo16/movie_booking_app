@@ -1,41 +1,46 @@
 import 'package:hive/hive.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
+import 'package:hw3_movie_booking_app/persistance/abstraction_layer/user_dao.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
-class UserDao{
+class UserDaoImpl extends UserDao{
 
-  static final UserDao _singleton = UserDao._internal();
+  static final UserDaoImpl _singleton = UserDaoImpl._internal();
 
-  factory UserDao(){
+  factory UserDaoImpl(){
     return _singleton;
   }
 
-UserDao._internal();
+UserDaoImpl._internal();
 
-  void saveUserInfo(UserVO userInfo)async{
-        return getUserBox().put(userInfo.id, userInfo);
-  }
+  // void saveUserInfo(UserVO userInfo)async{
+  //       return getUserBox().put(userInfo.id, userInfo);
+  // }
 
+  @override
   Future<void> saveUserInfoFuture(UserVO userInfo){
       return getUserBox().put(userInfo.id, userInfo);
   }
 
-
+  @override
   List<UserVO> getUserInfo(){
     return getUserBox().values.toList();
   }
 
+  @override
      deleteUserInfo(){
        return getUserBox().clear();
   }
 
   ///Reactive Programming
   
+    @override
   Stream<void> getUserInfoEventStream(){
     return getUserBox().watch();
   }
 
+  @override
   List<UserVO> getUserInfoData(){
       if(getUserInfo() != null && getUserInfo().isNotEmpty){
         print("Persistance layer data output check =========> ${getUserInfo()}");
@@ -45,6 +50,7 @@ UserDao._internal();
       }
   }
 
+  @override
    Stream<List<UserVO>> getUserInfoStream(){
         return Stream.value(getUserInfo());
   }

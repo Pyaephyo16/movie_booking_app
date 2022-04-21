@@ -1,18 +1,19 @@
 import 'package:hive/hive.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
+import 'package:hw3_movie_booking_app/persistance/abstraction_layer/snack_dao.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
-class SnackDao{
+class SnackDaoImpl extends SnackDao{
 
-  static final SnackDao _singleton = SnackDao._internal();
+  static final SnackDaoImpl _singleton = SnackDaoImpl._internal();
 
-  factory SnackDao(){
+  factory SnackDaoImpl(){
     return _singleton;
   }
 
-  SnackDao._internal();
+  SnackDaoImpl._internal();
 
-
+  @override
   void saveAllSnacks(List<SnackVO> snackList)async{
     Map<int,SnackVO> getSnackMap = Map.fromIterable(
       snackList,
@@ -22,6 +23,7 @@ class SnackDao{
     return getSnackBox().putAll(getSnackMap);
   }
 
+  @override
   List<SnackVO> getAllSnacks(){
     return getSnackBox().values.toList();
   }
@@ -29,10 +31,12 @@ class SnackDao{
 
   ///Reactive Programming
 
+  @override
   Stream<void> getAllSnacksEventStream(){
       return getSnackBox().watch();
   }
 
+  @override
   List<SnackVO> getAllSnacksData(){
     if(getAllSnacks() != null && getAllSnacks().isNotEmpty){
       print("All Snacks in database====================> ${getAllSnacks()}");
@@ -42,6 +46,7 @@ class SnackDao{
     }
   }
 
+  @override
   Stream<List<SnackVO>> getAllSnacksStream(){
       return Stream.value(getAllSnacks());
   }

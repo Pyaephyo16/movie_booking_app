@@ -1,17 +1,19 @@
 import 'package:hive/hive.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_vo.dart';
+import 'package:hw3_movie_booking_app/persistance/abstraction_layer/movie_dao.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
-class MovieDao{
+class MovieDaoImpl extends MovieDao{
 
-  static final MovieDao _singleton = MovieDao._internal();
+  static final MovieDaoImpl _singleton = MovieDaoImpl._internal();
 
-  factory MovieDao(){
+  factory MovieDaoImpl(){
     return _singleton;
   }
 
-  MovieDao._internal();
+  MovieDaoImpl._internal();
 
+  @override
   void saveAllMovies(List<MovieVO> movieList)async{
       Map<int,MovieVO> getMovieMap = Map.fromIterable(
         movieList,
@@ -21,27 +23,30 @@ class MovieDao{
       await getMovieBox().putAll(getMovieMap);
   }
 
+  @override
   saveSingleMovies(MovieVO movie)async{
     return getMovieBox().put(movie.id,movie);
   }
 
 
-
+  @override
   List<MovieVO> getAllMovies(){
     return getMovieBox().values.toList();
   }
 
+  @override
   MovieVO? getSingleMovie(int movieId){
     return getMovieBox().get(movieId);
   }
 
   ///Reactive Programming
   
+    @override
   Stream<void> getAllMoviesEventStream(){
     return getMovieBox().watch();
   }
 
-
+  @override
   List<MovieVO> getNowplayingMovies(){
       if(getAllMovies() != null && getAllMovies().isNotEmpty){
          print("Persistance layer data output check =========> ${getAllMovies()}");
@@ -53,12 +58,14 @@ class MovieDao{
       }
   }
 
+  @override
   Stream<List<MovieVO>> getNowplayingMoviesStream(){
           return Stream.value(getAllMovies()
             .where((element) => element.isNowPlaying ?? false)
             .toList());
   }
 
+  @override
   List<MovieVO> getComingSoonMovies(){
       if(getAllMovies() != null && getAllMovies().isNotEmpty){
         return getAllMovies()
@@ -69,12 +76,14 @@ class MovieDao{
       }
   }
 
+  @override
    Stream<List<MovieVO>> getComingSoonMoviesStream(){
         return Stream.value(getAllMovies()
         .where((element) => element.isComingSoon ?? false)
         .toList()); 
   }
 
+  @override
   MovieVO? getSingleMovieData(int movieId){
     if(getSingleMovie(movieId) != null){
       print("Movie Detail check in database ====> ${getSingleMovie(movieId)}");
@@ -84,6 +93,7 @@ class MovieDao{
     }
   }
 
+  @override
   Stream<MovieVO?> getSingleMovieStream(int movieId){
       return Stream.value(getSingleMovie(movieId));
   }

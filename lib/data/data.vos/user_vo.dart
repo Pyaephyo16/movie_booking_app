@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -52,5 +53,32 @@ class UserVO {
   @override
   String toString() {
     return 'UserVO(id: $id, name: $name, email: $email, phone: $phone, totalExpense: $totalExpense, profileImage: $profileImage, cards: $cards, token: $token)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is UserVO &&
+      other.id == id &&
+      other.name == name &&
+      other.email == email &&
+      other.phone == phone &&
+      other.totalExpense == totalExpense &&
+      other.profileImage == profileImage &&
+      listEquals(other.cards, cards) &&
+      other.token == token;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      email.hashCode ^
+      phone.hashCode ^
+      totalExpense.hashCode ^
+      profileImage.hashCode ^
+      cards.hashCode ^
+      token.hashCode;
   }
 }

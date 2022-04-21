@@ -75,10 +75,11 @@ class MovieSeatsPage extends StatelessWidget {
                 ),
                 Selector<MovieSeatPageBloc,List<SeatVO>>(
                   selector: (context,bloc) => bloc.fixedSeat ?? [],
+                  shouldRebuild: (previous,next) => previous != next,
                   builder: (context,seat,child) =>
-                     Selector<MovieSeatPageBloc,int>(
-                  selector: (context,bloc) => bloc.totalAmount,
-                  builder: (context,amount,child) =>
+                  //    Selector<MovieSeatPageBloc,int>(
+                  // selector: (context,bloc) => bloc.totalAmount,
+                  // builder: (context,amount,child) =>
                         GridView.builder(
                         itemCount: seat.length,
                         physics: NeverScrollableScrollPhysics(),
@@ -102,7 +103,7 @@ class MovieSeatsPage extends StatelessWidget {
                           );
                         },
                                         ),
-                     ),
+                     //),
                 ),
                 SizedBox(
                   height: MARGIN_MEDIUM_3,
@@ -141,7 +142,7 @@ class MovieSeatsPage extends StatelessWidget {
                         Selector<MovieSeatPageBloc,int>(
                            selector: (context,bloc) => bloc.totalAmount,
                            builder: (context,amount,child) =>
-                          ButtonActionView(
+                          ButtonActionWidgetView(
                             onClick: () => 
                              _navigateToNextScreen(context,
                                  amount,
@@ -216,33 +217,34 @@ class SeatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
-                            margin: EdgeInsets.symmetric(horizontal: 6,vertical: 6),
-                            decoration: BoxDecoration(
-                              color: onChooseColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(MARGIN_MEDIUM_2),
-                                topRight: Radius.circular(MARGIN_MEDIUM_2),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(seat[index].type == "text" ? seat[index].symbol ?? "" : seat[index].isSelected == true ? "${seat[index].id}" : "" ,
-                              style: TextStyle(
-                                color: seat[index].isSelected == true ? Colors.white : Colors.black,
-                              ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                key: Key("seat$index"),
+                margin: EdgeInsets.symmetric(horizontal: 6,vertical: 6),
+                decoration: BoxDecoration(
+                color: onChooseColor,
+                borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(MARGIN_MEDIUM_2),
+                topRight: Radius.circular(MARGIN_MEDIUM_2),
+              ),
+            ),
+          child: Center(
+           child: Text(seat[index].type == "text" ? seat[index].symbol ?? "" : seat[index].isSelected == true ? "${seat[index].id}" : "" ,
+              style: TextStyle(
+              color: seat[index].isSelected == true ? Colors.white : Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
                             
-                          );
+       );
   }
 }
 
 
-class ButtonActionView extends StatelessWidget {
+class ButtonActionWidgetView extends StatelessWidget {
 
   final Function onClick;
 
-  ButtonActionView({required this.onClick});
+  ButtonActionWidgetView({required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -291,19 +293,23 @@ class UserTicketsAndSeatsView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                LABEL_TICKETS,
-                style: TextStyle(
-                  color: MVOIE_TIME_COLOR,
-                  fontSize: TEXT_REGULAR_2X,
+              Expanded(
+                child: Text(
+                  LABEL_TICKETS,
+                  style: TextStyle(
+                    color: MVOIE_TIME_COLOR,
+                    fontSize: TEXT_REGULAR_2X,
+                  ),
                 ),
               ),
-              Spacer(),
-              Text(
-                "${pickTicketsCount}",
-                style: TextStyle(
-                  color: MVOIE_TIME_COLOR,
-                  fontSize: TEXT_REGULAR_2X,
+              //Spacer(),
+              Expanded(
+                child: Text(
+                  "${pickTicketsCount}",
+                  style: TextStyle(
+                    color: MVOIE_TIME_COLOR,
+                    fontSize: TEXT_REGULAR_2X,
+                  ),
                 ),
               )
             ],

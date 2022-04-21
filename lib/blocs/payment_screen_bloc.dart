@@ -13,27 +13,34 @@ class PaymentScreenBloc extends ChangeNotifier{
 
   ///State Variables
   List<CardVO>? profile;
+  UserSelectVO? boucherData;
   CardVO? userChoose;
-  //CardVO? forFirst;
 
   ///Test
   CheckoutRequestVO? userData;
-  UserSelectVO? boucherData;
 
   int? finalCost;
   int? cardId;
 
-  //int forRefresh = 0;
+  PaymentScreenBloc({MovieModel? mModel}){
 
-  PaymentScreenBloc(){
+
+    if(mModel != null){
+      movieModel = mModel;
+    }
 
  ///Get All profile database
     movieModel.getCardsFromProfileDatabase().listen((value){
         print("All cards in view layer ===================> ${value?.cards}");
           profile = value?.cards;
+
+        // for(int i=0;i< profile!.length;i++){
+        //       temp.add(profile![profile!.length - (i+1)]);
+        // } 
+
           notifyListeners();
       if(profile?.isNotEmpty ?? false){
-        userChoose = profile?[0];
+        userChoose = profile?.last;
         notifyListeners();
       }
     }).onError((error){
@@ -42,16 +49,6 @@ class PaymentScreenBloc extends ChangeNotifier{
 
   }
 
-  //  Stream<UserSelectVO?> doCheckout(CheckoutRequestVO userData,String imageView,String movieName,String userChooseCinema){
-  //   ///Post Checkout
-  //   movieModel.checkout(userData).then((data){
-  //       boucherData = data;
-  //       notifyListeners();
-  //   }).catchError((error){
-  //     debugPrint("Checkout Error =========> ${error.toString()}");
-  //   });
-  //   return Stream.value(boucherData);
-  // }
 
   userSelectionCard(int index)async{
           userChoose = profile?[index];
@@ -63,9 +60,7 @@ class PaymentScreenBloc extends ChangeNotifier{
     int movieId,int cinemaId,List<SnackVO> snackListBought,
     ){
      finalCost = snackCost+seatCost;
-     //notifyListeners();
            cardId = userChoose?.id;
-           //notifyListeners();
         print("Cinema Id Check =======> ${cardId}");
         print("userChoosedayTimeslotId =======> ${userChoosedayTimeslotId}");
         print("totalRow =======> ${totalRow}");
@@ -83,7 +78,6 @@ class PaymentScreenBloc extends ChangeNotifier{
         finalCost, movieId, cardId,cinemaId,
      snackListBought.length ==0 ? [] : snackListBought,
                     );
-                    //notifyListeners();
 
           print("UserData ====================> ${userData}");
 
@@ -92,6 +86,7 @@ class PaymentScreenBloc extends ChangeNotifier{
       print("Api output data ===============> ${data}");
         boucherData = data;
         notifyListeners();
+        return boucherData;
     }).catchError((error){
       debugPrint("Checkout Error =========> ${error.toString()}");
     });

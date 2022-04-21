@@ -1,21 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
+
 import 'package:hw3_movie_booking_app/data/data.vos/collection_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/genre_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/production_company_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/production_country_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/spoken_language_vo.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'movie_vo.g.dart';
-
 
 ///budget for movie detail can be double or int.api is int.
 
 
 @JsonSerializable()
 @HiveType(typeId: HIVE_TYPE_ID_MOVIE_VO,adapterName: "MovieVOAdapter")
-class MovieVO{
+class MovieVO {
   @JsonKey(name: "adult")
   @HiveField(0)
     bool? adult;
@@ -159,8 +160,10 @@ class MovieVO{
       this.isComingSoon);
 
   String runTimeShowDetail(int runTime){
-    late String hour;
+  late String hour;
     late String minute;
+
+    print("Run time data for calculate ====================> $runtime");
 
     hour = (runTime/60).toStringAsFixed(0);
     minute = (runTime%60).toString();
@@ -176,4 +179,71 @@ class MovieVO{
   factory MovieVO.fromJson(Map<String,dynamic> json) => _$MovieVOFromJson(json);
 
   Map<String,dynamic> toJson() => _$MovieVOToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is MovieVO &&
+      other.adult == adult &&
+      other.backdropPath == backdropPath &&
+      listEquals(other.genreId, genreId) &&
+      other.id == id &&
+      other.originalLanguage == originalLanguage &&
+      other.originalTitle == originalTitle &&
+      other.overView == overView &&
+      other.popularity == popularity &&
+      other.posterPath == posterPath &&
+      other.releaseDate == releaseDate &&
+      other.title == title &&
+      other.video == video &&
+      other.voteAverage == voteAverage &&
+      other.voteCount == voteCount &&
+      other.belongsToCollection == belongsToCollection &&
+      other.budget == budget &&
+      listEquals(other.genres, genres) &&
+      other.homepage == homepage &&
+      other.imdbId == imdbId &&
+      listEquals(other.productionCompanies, productionCompanies) &&
+      listEquals(other.productoinCountries, productoinCountries) &&
+      other.revenue == revenue &&
+      other.runtime == runtime &&
+      listEquals(other.spokenLanguages, spokenLanguages) &&
+      other.status == status &&
+      other.tagline == tagline &&
+      other.isNowPlaying == isNowPlaying &&
+      other.isComingSoon == isComingSoon;
+  }
+
+  @override
+  int get hashCode {
+    return adult.hashCode ^
+      backdropPath.hashCode ^
+      genreId.hashCode ^
+      id.hashCode ^
+      originalLanguage.hashCode ^
+      originalTitle.hashCode ^
+      overView.hashCode ^
+      popularity.hashCode ^
+      posterPath.hashCode ^
+      releaseDate.hashCode ^
+      title.hashCode ^
+      video.hashCode ^
+      voteAverage.hashCode ^
+      voteCount.hashCode ^
+      belongsToCollection.hashCode ^
+      budget.hashCode ^
+      genres.hashCode ^
+      homepage.hashCode ^
+      imdbId.hashCode ^
+      productionCompanies.hashCode ^
+      productoinCountries.hashCode ^
+      revenue.hashCode ^
+      runtime.hashCode ^
+      spokenLanguages.hashCode ^
+      status.hashCode ^
+      tagline.hashCode ^
+      isNowPlaying.hashCode ^
+      isComingSoon.hashCode;
+  }
 }

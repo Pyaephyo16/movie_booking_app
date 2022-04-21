@@ -1,23 +1,25 @@
 import 'package:hive/hive.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/actor_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/actorlist_for_hive_vo.dart';
+import 'package:hw3_movie_booking_app/persistance/abstraction_layer/actor_dao.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
-class ActorDao{
+class ActorDaoImpl extends ActorDao{
 
-  static final ActorDao _singleton = ActorDao._internal();
+  static final ActorDaoImpl _singleton = ActorDaoImpl._internal();
 
-  factory ActorDao(){
+  factory ActorDaoImpl(){
     return _singleton;
   }
 
-  ActorDao._internal();
+  ActorDaoImpl._internal();
 
+  @override
   void saveAllActors(int movieId,ActorListForHiveVO actorList)async{
     return getActorBox().put(movieId,actorList);
   }
 
-  
+  @override
  ActorListForHiveVO? getAllActors(int movieId){
     return getActorBox().get(movieId);
   }
@@ -25,10 +27,12 @@ class ActorDao{
 
   ///Reactive Programming
   
+  @override
   Stream<void> getActorEventStream(){
     return getActorBox().watch();
   }
 
+  @override
   ActorListForHiveVO? getAllActorsData(int movieId){
       if(getAllActors(movieId) != null ){
         print("Actor list in database ==========> ${getAllActors(movieId)}");
@@ -38,6 +42,7 @@ class ActorDao{
       }
   }
 
+  @override
   Stream<ActorListForHiveVO?> getAllActorsStream(int movieId){
         return Stream.value(getAllActors(movieId));
   }

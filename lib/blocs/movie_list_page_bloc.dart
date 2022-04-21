@@ -14,7 +14,11 @@ class MovieListPageBloc extends ChangeNotifier{
   List<MovieVO>? nowPlayingMovieList;
   List<MovieVO>? comingSoonMovieList;
 
-  MovieListPageBloc(){
+  MovieListPageBloc({MovieModel? mModel}){
+
+    if(mModel != null){
+      movieModel = mModel;
+    }
 
       ///Login User Info database
     movieModel.getLoginUserInfoDatabase().listen((userInfo){

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
@@ -69,5 +70,40 @@ UserSelectVO.emptySituation();
   @override
   String toString() {
     return 'UserSelectVO(id: $id, bookingNo: $bookingNo, bookingDate: $bookingDate, row: $row, seat: $seat, totalSeat: $totalSeat, total: $total, movieId: $movieId, cinemaId: $cinemaId, userName: $userName, timeslot: $timeslot, snacks: $snacks)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is UserSelectVO &&
+      other.id == id &&
+      other.bookingNo == bookingNo &&
+      other.bookingDate == bookingDate &&
+      other.row == row &&
+      other.seat == seat &&
+      other.totalSeat == totalSeat &&
+      other.total == total &&
+      other.movieId == movieId &&
+      other.cinemaId == cinemaId &&
+      other.userName == userName &&
+      other.timeslot == timeslot &&
+      listEquals(other.snacks, snacks);
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      bookingNo.hashCode ^
+      bookingDate.hashCode ^
+      row.hashCode ^
+      seat.hashCode ^
+      totalSeat.hashCode ^
+      total.hashCode ^
+      movieId.hashCode ^
+      cinemaId.hashCode ^
+      userName.hashCode ^
+      timeslot.hashCode ^
+      snacks.hashCode;
   }
 }

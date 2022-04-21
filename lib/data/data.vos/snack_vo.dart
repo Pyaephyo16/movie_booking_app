@@ -1,12 +1,13 @@
 import 'package:hive/hive.dart';
-import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
 part 'snack_vo.g.dart';
 
 @JsonSerializable()
 @HiveType(typeId: HIVE_TYPE_ID_SNACK_VO,adapterName: "SnackVOAdapter")
-class SnackVO{
+class SnackVO {
 
   @JsonKey(name: "id")
   @HiveField(0)
@@ -42,5 +43,28 @@ class SnackVO{
   @override
   String toString() {
     return 'SnackVO{id: $id, name: $name, description: $description, price: $price, image: $image, quantity: $quantity}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is SnackVO &&
+      other.id == id &&
+      other.name == name &&
+      other.description == description &&
+      other.price == price &&
+      other.image == image &&
+      other.quantity == quantity;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      description.hashCode ^
+      price.hashCode ^
+      image.hashCode ^
+      quantity.hashCode;
   }
 }

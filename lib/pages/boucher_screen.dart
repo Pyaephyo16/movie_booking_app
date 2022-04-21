@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hw3_movie_booking_app/blocs/boucher_screen_bloc.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/checkout_request_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/user_select_vo.dart';
@@ -10,6 +11,7 @@ import 'package:hw3_movie_booking_app/resources/colors.dart';
 import 'package:hw3_movie_booking_app/resources/dimens.dart';
 import 'package:hw3_movie_booking_app/resources/strings.dart';
 import 'package:hw3_movie_booking_app/viewitems/DottedLineSectionView.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -29,35 +31,40 @@ class BoucherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.all(MARGIN_MEDIUM_2),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MARGIN_XLARGE,),
-              SizedBox(height: MARGIN_XLARGE,),
-              PopView(),
-              SizedBox(height: MARGIN_MEDIUM_3,),
-              Align(
-                alignment: Alignment.center,
-                child: TitleView(),
-              ),
-              SizedBox(height: MARGIN_MEDIUM_3,),
-              Align(
-                alignment: Alignment.center,
-               child: TicketView(
-                 image: imageView,
-                 //date: widget.dateData,
-                 date: boucherData.bookingDate ?? "",
-                 movieName: movieName,
-                 cinemaName: userChooseCinema,
-                 boucherData:boucherData,
-               ),
-              ),
-            ],
+    return ChangeNotifierProvider(
+      create: (context) => boucherScreenBloc(boucherData),
+      child: Scaffold(
+        body: Container(
+          color: Colors.white,
+          padding: EdgeInsets.all(MARGIN_MEDIUM_2),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MARGIN_XLARGE,),
+                PopView(),
+                SizedBox(height: MARGIN_MEDIUM_3,),
+                Align(
+                  alignment: Alignment.center,
+                  child: TitleView(),
+                ),
+                SizedBox(height: MARGIN_MEDIUM_3,),
+                Align(
+                  alignment: Alignment.center,
+                 child: Selector<boucherScreenBloc,UserSelectVO>(
+                   selector: (context,bloc) => bloc.boucherData ?? UserSelectVO.emptySituation(),
+                   builder: (context,boucherData,child) =>
+                    TicketView(
+                     image: imageView,
+                     date: boucherData.bookingDate ?? "",
+                     movieName: movieName,
+                     cinemaName: userChooseCinema,
+                     boucherData:boucherData,
+                   ),
+                 ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

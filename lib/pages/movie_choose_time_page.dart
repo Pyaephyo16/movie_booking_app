@@ -70,10 +70,11 @@ String? getDate;
                   padding: EdgeInsets.only(top: MARGIN_MEDIUM_3,left: MARGIN_MEDIUM_3,right: MARGIN_MEDIUM_3),
                   child: Selector<MovieChooseTimePageBloc,List<CinemaVO>>(
                     selector: (context,bloc) => bloc.cinemaInfo ?? [],
+                    shouldRebuild: (previous,next) => previous != next,
                     builder: (context,cinema,child) =>
-                        Selector<MovieChooseTimePageBloc,String>(
-                    selector: (context,bloc) => bloc.userChooseTime ?? "",
-                    builder: (context,chooseTime,child) =>
+                    //     Selector<MovieChooseTimePageBloc,String>(
+                    // selector: (context,bloc) => bloc.userChooseTime ?? "",
+                    // builder: (context,chooseTime,child) =>
                            ListView.builder(
                           shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -86,7 +87,7 @@ String? getDate;
                               );
                             }
                                            ),
-                        ),
+                       //),
                   ),
                 ),
                 SizedBox(height: MARGIN_LARGE,),
@@ -121,7 +122,7 @@ String? getDate;
                                                      movieId,
                                                      userCinemaId,
                                                     imageView,
-                                             ),
+                                             ),           
                                              ),
                              ),
                           ),
@@ -181,6 +182,7 @@ class MovieChooseDateView extends StatelessWidget {
           DatePicker(
             DateTime.now(),
             daysCount: 14,
+            key: Key("datePickerKey"),
             initialSelectedDate: DateTime.now(),
             selectionColor: PRIMARY_COLOR,
             selectedTextColor: Colors.white,
@@ -233,6 +235,7 @@ final Function(List<CinemaVO> cinema,int cindex,int index,BuildContext context) 
           },
                    child:
                            Container(
+                             key: Key("dateslot$cindex$index"),
                   margin: EdgeInsets.only(left: MARGIN_MEDIUM_3,right: MARGIN_MEDIUM_3,top: MARGIN_MEDIUM),
                        decoration: BoxDecoration(
                     color: cinema[cindex].timeslots?[index].isSelected == true ? PRIMARY_COLOR : Colors.white,

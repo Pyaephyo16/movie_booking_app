@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -24,4 +25,17 @@ class CinemaListForHiveVO {
 
   @override
   String toString() => 'CinemaListForHiveVO(cinemaList: $cinemaList)';
+
+
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is CinemaListForHiveVO &&
+      listEquals(other.cinemaList, cinemaList);
+  }
+
+  @override
+  int get hashCode => cinemaList.hashCode;
 }

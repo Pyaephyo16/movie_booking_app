@@ -80,9 +80,10 @@ class PaymentScreen extends StatelessWidget {
                       SizedBox(height: MARGIN_MEDIUM_2,),
                       Selector<PaymentScreenBloc,List<CardVO>>(
                         selector: (context,bloc) => bloc.profile ?? [],
+                         shouldRebuild: (previous,next) => previous != next,
                         builder: (context,profile,child) =>
                          CardSectionView(
-                          profile: profile,
+                          profile: profile.reversed.toList(),
                           takeData: (index){
                           PaymentScreenBloc _cardBloc = Provider.of(context,listen: false);
                           _cardBloc.userSelectionCard(index);
@@ -281,17 +282,19 @@ class CardSectionView extends StatelessWidget {
         itemCount: profile.length,
         itemBuilder: (BuildContext context,int index,int pageViewIndex){
           return PaymentCardView(
+            index: index,
            data: profile[index],
           );
         },
         options: CarouselOptions(
           onPageChanged: (index,_){
             takeData(index);
+            print("Card List Length =================> ${profile.length}");
+            print("Key =======================> card$index");
           },
           height: CAROUSEL_SLIDER_HEIGHT,
           aspectRatio: 16/9,
           viewportFraction: 0.8,
-          initialPage: 0,
           enableInfiniteScroll: false,
           reverse: false,
           enlargeCenterPage: true,
@@ -303,13 +306,15 @@ class CardSectionView extends StatelessWidget {
 
 class PaymentCardView extends StatelessWidget {
 
+  final int index;
   final CardVO data;
 
-  PaymentCardView({required this.data});
+  PaymentCardView({required this.index,required this.data});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: Key("card$index"),
       height: MARGIN_VLARGE_1,
       width: double.infinity,
       margin: EdgeInsets.only(top: MARGIN_MEDIUM_3,bottom: MARGIN_SMALL,left: MARGIN_MEDIUM,right: MARGIN_MEDIUM),
@@ -347,23 +352,31 @@ class PaymentCardView extends StatelessWidget {
             ],
           ),
           SizedBox(height: MARGIN_MEDIUM_4,),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              TextView("* * * *"),
-              Spacer(),
-              TextView("* * * *"),
-              Spacer(),
-             TextView("* * * *"),
-             Spacer(),
-              Text("${data.cardNumber?.substring(6)}",
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //   //   TextView("* * * *"),
+          //   //   Spacer(),
+          //   //   TextView("* * * *"),
+          //   //   Spacer(),
+          //   //  TextView("* * * *"),
+          //   //  Spacer(),
+          //   //   Text("${data.cardNumber?.substring(6)}",
+          //   //     style: TextStyle(
+          //   //       fontSize: TEXT_REGULAR_5X,
+          //   //       color: Colors.white,
+          //   //     ),
+          //   //   ),
+          //   ],
+          // ),
+          Center(
+            child: Text("${data.cardNumber}",
                 style: TextStyle(
                   fontSize: TEXT_REGULAR_5X,
                   color: Colors.white,
                 ),
-              )
-            ],
+              ),
           ),
           SizedBox(height: MARGIN_MEDIUM_4,),
           Row(

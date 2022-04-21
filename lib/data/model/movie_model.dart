@@ -45,6 +45,6 @@ abstract class MovieModel{
   Stream<CinemaListForHiveVO?> getCinemaDayTimeslotDatabase(String date);
 
 
-  Future<void> deleteAllCards();
-  Future<void> deleteMoviesData();
+  //Future<void> deleteAllCards();
+  //Future<void> deleteMoviesData();
 }

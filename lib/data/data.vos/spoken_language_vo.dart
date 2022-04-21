@@ -1,12 +1,13 @@
 import 'package:hive/hive.dart';
-import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
 part 'spoken_language_vo.g.dart';
 
 @JsonSerializable()
 @HiveType(typeId: HIVE_TYPE_ID_SPOKEN_LANGUAGE_VO,adapterName: "SpokenLanguageVOAdpater")
-class SpokenLanguageVO{
+class SpokenLanguageVO {
   @JsonKey(name: "english_name")
   @HiveField(0)
   String? englishName;
@@ -24,4 +25,17 @@ class SpokenLanguageVO{
   factory SpokenLanguageVO.fromJson(Map<String,dynamic> json) => _$SpokenLanguageVOFromJson(json);
 
   Map<String,dynamic> toJson() => _$SpokenLanguageVOToJson(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is SpokenLanguageVO &&
+      other.englishName == englishName &&
+      other.iso6391 == iso6391 &&
+      other.name == name;
+  }
+
+  @override
+  int get hashCode => englishName.hashCode ^ iso6391.hashCode ^ name.hashCode;
 }

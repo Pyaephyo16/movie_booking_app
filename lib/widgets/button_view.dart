@@ -7,8 +7,12 @@ class ButtonView extends StatelessWidget {
   final bool isGhostButton;
   final Function onClick;
 
-  ButtonView(this.title,
-      {this.buttonColor, this.isGhostButton = false,required this.onClick});
+  ButtonView(
+    this.title,
+      {this.buttonColor,
+       this.isGhostButton = false,
+       required this.onClick,
+       });
 
   @override
   Widget build(BuildContext context) {

@@ -46,7 +46,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       Selector<MovieDetailPageBloc,String>(
                         selector: (context,bloc) => bloc.imageView ?? "",
                         builder: (context,image,child) =>
-                         AppBarScreenView(
+                       AppBarScreenView(
                           //image: movieDetails?.posterPath ?? "",
                           image: image,
                         ),
@@ -59,7 +59,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                 bottom: MARGIN_MEDIUM_3,
                                 left: MARGIN_MEDIUM_3,
                                 right: MARGIN_MEDIUM_3),
-                            child: MovieInfoView(
+                            child: InfoView(
                                 name: movie.title ?? "",
                               totalTime: movie.runTimeShowDetail(movie.runtime ?? 0),
                               rating: movie.voteAverage ?? 0.0,
@@ -149,7 +149,7 @@ class CastView extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: actorList.map((actor){
-              return Container(
+              return (actor.profilePath == null) ? Container() : Container(
                 clipBehavior: Clip.antiAlias,
                 margin: EdgeInsets.symmetric(horizontal: 8),
                 width: 60,
@@ -210,14 +210,14 @@ class MoviePlotView extends StatelessWidget {
   }
 }
 
-class MovieInfoView extends StatelessWidget {
+class InfoView extends StatelessWidget {
 
   final String name;
   final String totalTime;
   final double rating;
   final List<String> genreList;
 
-  MovieInfoView({required this.name,required this.totalTime,required this.rating,required this.genreList});
+  InfoView({required this.name,required this.totalTime,required this.rating,required this.genreList});
 
   @override
   Widget build(BuildContext context) {
@@ -372,7 +372,7 @@ class AppBarScreenView extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 Positioned.fill(
-                  child: CachedNetworkImage(
+                  child: (image.isEmpty) ? Container() : CachedNetworkImage(
                     imageUrl: "$IMAGE_BASE_URL$image",
                     fit: BoxFit.cover,
                     progressIndicatorBuilder: (context, url, downloadProgress) =>

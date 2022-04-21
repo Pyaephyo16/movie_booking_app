@@ -14,7 +14,11 @@ class MovieDetailPageBloc extends ChangeNotifier{
   List<ActorVO>? cast;
   String? imageView;
 
-  MovieDetailPageBloc(int movieId,bool isNowPlaying){
+  MovieDetailPageBloc(int movieId,bool isNowPlaying,{MovieModel? mModel}){
+
+    if(mModel != null){
+      movieModel = mModel;
+    }
 
     ///Movie Details Database
     movieModel.getMovieDetailsDatabase(movieId,isNowPlaying).listen((movie){

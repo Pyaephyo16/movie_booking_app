@@ -26,12 +26,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     movieModel.getLoginUserInfoDatabase().listen((value){
-      // if(value[0].token!=null){
-      //   print("Splah Page token check ${value[0].token}");
-      //   Navigator.push(context,
-      //             MaterialPageRoute(builder: (context)=> MovieListScreen(),
-      //           ));
-      // }
+     
       if(value.isNotEmpty){
         if(value[0].token!=null){
         print("Splah Page token check ${value[0].token}");

@@ -25,7 +25,7 @@ import 'package:hw3_movie_booking_app/pages/splash_page.dart';
 import 'package:hw3_movie_booking_app/pages/payment_screen.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
-
+//https://www.sourcetreeapp.com/
 
 void main()async {
 
@@ -63,7 +63,17 @@ await Hive.openBox<SnackVO>(BOX_NAME_SNACK_VO);
 await Hive.openBox<PaymentVO>(BOX_NMAE_PAYMENT_METHOD_VO);
 
   runApp(
-    MaterialApp(
+    MyApp(),
+  );
+}
+
+
+class MyApp extends StatelessWidget {
+  const MyApp({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: AppBarTheme(
@@ -73,8 +83,8 @@ await Hive.openBox<PaymentVO>(BOX_NMAE_PAYMENT_METHOD_VO);
         )
       ),
       home: SplashPage(),
-    ),
-  );
+    );
+  }
 }
 
 

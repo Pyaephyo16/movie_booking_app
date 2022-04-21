@@ -1,5 +1,3 @@
-import 'package:carousel_slider/carousel_options.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/payment_info_screen_bloc.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
@@ -55,6 +53,7 @@ class PaymentInfoScreen extends StatelessWidget {
                               newCardNumber = data;
                         },
                         isNumber: true,
+                        key: Key("numberKey"),
                       ),
                     SizedBox(
                       height: MARGIN_MEDIUM_4,
@@ -65,6 +64,7 @@ class PaymentInfoScreen extends StatelessWidget {
                             newCardHolder = data;
                       },
                       isNumber: false,
+                      key: Key("holderKey"),
                     ),
                     SizedBox(
                       height: MARGIN_MEDIUM_4,
@@ -80,6 +80,7 @@ class PaymentInfoScreen extends StatelessWidget {
                                   expirationDate = data;
                             },
                             isNumber: false,
+                            key: Key("expirationDateKey"),
                           ),
                         ),
                         Expanded(
@@ -89,6 +90,7 @@ class PaymentInfoScreen extends StatelessWidget {
                                   cvc = data;
                           },
                           isNumber: true,
+                          key: Key("cvcKey"),
                           ),
                         ),
                       ],
@@ -102,42 +104,27 @@ class PaymentInfoScreen extends StatelessWidget {
                 right: 20,
     
                 child: Builder(
-                  builder: (context) => GestureDetector(
-                    onTap: (){
-                       if(newCardNumber == null || newCardNumber.isEmpty){
-                                    return;
-                             }
-                          if(newCardHolder == null || newCardHolder.isEmpty){
-                               return;
-                            }
-                          if(expirationDate == null || expirationDate.isEmpty){
-                           return;
-                                }
-                         if(cvc == null || cvc.isEmpty){
-                        return;
-                            }
-                            PaymentInfoScreenBloc _bloc = Provider.of(context,listen: false);
-                        _bloc.newCardCreation(newCardNumber,newCardHolder,expirationDate,cvc).then((value) => Navigator.pop(context));
-                    
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: BUTTON_HEIGHT,
-                      decoration: BoxDecoration(
-                        color: PRIMARY_COLOR,
-                        borderRadius: BorderRadius.circular(MARGIN_SMALL),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Confirm",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  builder: (context) => 
+                GestureDetector(
+      onTap: (){
+         if(newCardNumber == null || newCardNumber.isEmpty || newCardNumber.length <10){
+                      return;
+               }
+            if(newCardHolder == null || newCardHolder.isEmpty){
+                 return;
+              }
+            if(expirationDate == null || expirationDate.isEmpty){
+             return;
+                  }
+           if(cvc == null || cvc.isEmpty){
+          return;
+              }
+              PaymentInfoScreenBloc _bloc = Provider.of(context,listen: false);
+          _bloc.newCardCreation(newCardNumber,newCardHolder,expirationDate,cvc).then((value) => Navigator.pop(context));
+      
+      },
+      child: NewCardCreateButton(),
+    )  
                 ),
               ),
             ],
@@ -148,12 +135,42 @@ class PaymentInfoScreen extends StatelessWidget {
   }
 }
 
+class NewCardCreateButton extends StatelessWidget {
+  const NewCardCreateButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: BUTTON_HEIGHT,
+      decoration: BoxDecoration(
+        color: PRIMARY_COLOR,
+        borderRadius: BorderRadius.circular(MARGIN_SMALL),
+      ),
+      child: Center(
+        child: Text(
+          "Confirm",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
 class NewCardInfoView extends StatelessWidget {
   final String title;
   final Function(String) userData;
   final bool isNumber;
+  final Key key;
 
-  NewCardInfoView(this.title,{required this.userData,required this.isNumber});
+  NewCardInfoView(this.title,{required this.userData,required this.isNumber,required this.key});
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +192,7 @@ class NewCardInfoView extends StatelessWidget {
               height: MARGIN_SMALL,
             ),
             TextFormField(
+              key: key,
               onChanged: (String text){
                 userData(text);
               },

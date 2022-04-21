@@ -77,10 +77,11 @@ class SnapScreen extends StatelessWidget {
                       children: [
                         Selector<SnackScreenPageBloc,List<SnackVO>>(
                           selector: (context,bloc) => bloc.snackList ?? [],
+                           shouldRebuild: (previous,next) => previous != next,
                           builder: (context,snackList,child) =>
-                           Selector<SnackScreenPageBloc,int>(
-                               selector: (context,bloc) => bloc.isChooseCard,
-                               builder: (context,totalamount,child) =>
+                          //  Selector<SnackScreenPageBloc,bool>(
+                          //      selector: (context,bloc) => bloc.isChooseCard,
+                          //      builder: (context,totalamount,child) =>
                               BookingSetView(
                                 snacks: snackList,
                               increase: (userplus,index){
@@ -95,11 +96,10 @@ class SnapScreen extends StatelessWidget {
                                     _decreaseBloc.snackMinus(index);
                                   }
                               },
-                                                     ),
-                           ),
+                             ),
+                           //),
                         ),
                         PromoCodeView(),
-    
                         SizedBox(
                           height: MARGIN_MEDIUM_4,
                         ),
@@ -116,19 +116,20 @@ class SnapScreen extends StatelessWidget {
                         ),
                         Selector<SnackScreenPageBloc,List<PaymentVO>>(
                           selector: (context,bloc) => bloc.cards ?? [],
+                          shouldRebuild: (previous,next) => previous != next,
                           builder: (context,cards,child) =>
-                           Selector<SnackScreenPageBloc,int>(
-                             selector: (context,bloc) => bloc.isChooseCard,
-                             builder: (context,isChoose,child) =>
+                          //  Selector<SnackScreenPageBloc,bool>(
+                          //    selector: (context,bloc) => bloc.isChooseCard,
+                          //    builder: (context,isChoose,child) =>
                               PaidMethodView(
                               cards: cards,
                               chooseCard: (choosen,index){
                                   SnackScreenPageBloc _choosePaymentBloc = Provider.of(context,listen: false);
                                   _choosePaymentBloc.selectCard(index,choosen);
                               },
-                                                     ),
+                            ),
                            ),
-                        ),
+                        //),
                       ],
                     ),
                   ),
@@ -183,7 +184,7 @@ class SnapScreen extends StatelessWidget {
                     //       ),
                     //     ),
                     //   ),
-                    ButtonActionView(
+                    ButtonActionViewForClick(
                      title: "Pay \$ ${cost+donedone}",
                      donedone: donedone,
                      snackListBought: snackListBought,
@@ -244,14 +245,14 @@ class SnapScreen extends StatelessWidget {
   }
 }
 
-class ButtonActionView extends StatelessWidget {
+class ButtonActionViewForClick extends StatelessWidget {
 
 final String title;
 final int donedone;
 final List<SnackVO> snackListBought;
 final Function(BuildContext context,int donedone,List<SnackVO> snackListBought) onClick;
 
-ButtonActionView({required this.title,required this.donedone,required this.snackListBought,required this.onClick});
+ButtonActionViewForClick({required this.title,required this.donedone,required this.snackListBought,required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -310,10 +311,12 @@ class PaidMethodView extends StatelessWidget {
               itemCount: cards.length,
               itemBuilder: (BuildContext context,int index){
               return PaymentMethodView(
+                   index,
                   Icon(Icons.credit_card_rounded),
-                  cards[index].name ?? "",
-                  cards[index].description ?? "",
-                  isSelect: cards[index].isSelected ?? false,
+                  // cards[index].name ?? "",
+                  // cards[index].description ?? "",
+                  // isSelect: cards[index].isSelected ?? false,
+                   cards,
                 chooseCard: (choosen){
                      return this.chooseCard(choosen,index);
                 },
@@ -327,13 +330,25 @@ class PaidMethodView extends StatelessWidget {
 }
 
 class PaymentMethodView extends StatelessWidget {
+  final int index;
   final Icon icon;
-  final String title;
-  final String subtitle;
-  final bool isSelect;
+  final List<PaymentVO> cards;
+  // final String title;
+  // final String subtitle;
+  // final bool isSelect;
   final Function(bool) chooseCard;
 
-  PaymentMethodView(this.icon, this.title, this.subtitle,{required this.chooseCard,required this.isSelect});
+  PaymentMethodView(
+    this.index,
+    this.icon,
+    this.cards,
+     //this.title,
+      //this.subtitle,
+      {
+      required this.chooseCard,
+      //required this.isSelect,
+      }
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -351,19 +366,20 @@ class PaymentMethodView extends StatelessWidget {
               width: MARGIN_MEDIUM_4,
             ),
             Column(
+              key: Key("payment$index"),
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  "${cards[index].name}",
                   style: TextStyle(
-                    color: isSelect == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
+                    color: cards[index].isSelected == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
                     fontSize: TEXT_REGULAR_3X,
                   ),
                 ),
                 Text(
-                  subtitle,
+                  "${cards[index].description}",
                   style: TextStyle(
-                    color: isSelect == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
+                    color: cards[index].isSelected == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
                     fontSize: TEXT_REGULAR,
                   ),
                 ),
@@ -462,6 +478,7 @@ class BookingSetView extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return BookingView(
               snacks[index],
+              index,
           increase: (userplus)=> this.increase(userplus,index),
             decrease: (userminus) => this.decrease(userminus,index),
           );
@@ -472,10 +489,11 @@ class BookingSetView extends StatelessWidget {
 class BookingView extends StatelessWidget {
 
   final SnackVO snack;
+  final int index;
   final Function(bool) increase;
   final Function(bool) decrease;
 
-  BookingView(this.snack,{required this.increase,required this.decrease});
+  BookingView(this.snack,this.index,{required this.increase,required this.decrease});
 
   @override
   Widget build(BuildContext context) {
@@ -538,7 +556,9 @@ class BookingView extends StatelessWidget {
                       onTap:(){
                       decrease(true);
                     },
-                        child: Text("-",
+                        child: Text(
+                          "-",
+                          key: Key("minus$index"),
                           style: TextStyle(
                             fontSize: 38,
                           ),
@@ -564,7 +584,9 @@ class BookingView extends StatelessWidget {
                       onTap: (){
                         increase(true);
                       },
-                        child: Text("+",
+                        child: Text(
+                          "+",
+                          key: Key("plus$index"),
                         style: TextStyle(
                           fontSize: 28,
                         ),

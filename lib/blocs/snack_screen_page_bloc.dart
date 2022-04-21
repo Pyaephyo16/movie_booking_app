@@ -3,6 +3,7 @@ import 'package:hw3_movie_booking_app/data/data.vos/payment_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
+import 'package:collection/collection.dart';
 
 class SnackScreenPageBloc extends ChangeNotifier{
 
@@ -12,15 +13,20 @@ class SnackScreenPageBloc extends ChangeNotifier{
   ///State Variable
   List<SnackVO>? snackList;
   List<PaymentVO>? cards;
+  
   List<int> newCost = [];
   int donedone = 0;
   int totalamount = 0;
  List<SnackVO> snackListBought = [];
 
-  int isChooseCard =0;
+  bool isChooseCard = true;
 
 
- SnackScreenPageBloc(){
+ SnackScreenPageBloc({MovieModel? mModel}){
+
+   if(mModel != null){
+     movieModel = mModel;
+   }
 
    ///Get Snack List Database
     movieModel.getSnacksFromDatabase().listen((snacks){
@@ -45,9 +51,19 @@ class SnackScreenPageBloc extends ChangeNotifier{
     snackAdd(int index){
        totalamount = snackList![index].quantity ?? 0;
                    totalamount++;
-                   isChooseCard++;
-                   notifyListeners();
-              snackList![index].quantity = totalamount;
+                  //  isChooseCard = !isChooseCard;
+                  //  notifyListeners();
+
+                  List<SnackVO>? newActionAddSnack = snackList?.mapIndexed((i, element){
+                      if(i == index){
+                        element.quantity = totalamount;
+                      }
+                      return element;
+                  }).toList();
+                    snackList = newActionAddSnack;
+                    notifyListeners();
+
+              //snackList![index].quantity = totalamount;
         newCost.add(snackList![index].price ?? 0);
              donedone = newCost.reduce((f, s) => f+s);
         notifyListeners();
@@ -60,17 +76,19 @@ class SnackScreenPageBloc extends ChangeNotifier{
                   }
                  else if(totalamount != 0){
                    totalamount--;
-                   snackList![index].quantity = totalamount;
-                   isChooseCard++;
-                   notifyListeners();
+                   //snackList![index].quantity = totalamount;
+                  // isChooseCard = !isChooseCard;
+                  //  notifyListeners();
+
+                  List<SnackVO>? newActionRemoveSnack = snackList?.mapIndexed((i, element){
+                      if(i == index){
+                        element.quantity = totalamount;
+                      }
+                      return element;
+                  }).toList();
+                    snackList = newActionRemoveSnack;
+                    notifyListeners();
                   }
-                  else{
-                   totalamount;
-                   isChooseCard++;
-                   notifyListeners();
-               }
-              //snackList![index].quantity = totalamount;
-              //notifyListeners();
                newCost.remove(snackList![index].price ?? 0);
                int tocut = snackList![index].price ?? 0;
               donedone= donedone-tocut;
@@ -78,13 +96,15 @@ class SnackScreenPageBloc extends ChangeNotifier{
     }
 
     selectCard(int index,bool choosen){
-        isChooseCard++;
+    List<PaymentVO>? newActionPayment = cards?.mapIndexed((i, element){
+          element.isSelected = false;
+          if(i == index){
+            element.isSelected = true;
+          }
+          return element;
+    }).toList();
+        cards = newActionPayment;
         notifyListeners();
-          cards?.forEach((element) {
-         element.isSelected = false;
-      });
-     cards?[index].isSelected = true;
-     notifyListeners();
     }
 
    Stream<List<SnackVO>> userTakenSnack(){
@@ -102,6 +122,6 @@ class SnackScreenPageBloc extends ChangeNotifier{
                         }
                       }
                       return Stream.value(snackListBought);
-    }
+               }
 
 }

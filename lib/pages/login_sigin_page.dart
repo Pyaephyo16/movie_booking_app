@@ -35,7 +35,6 @@ class _LoginAndSiginPageState extends State<LoginAndSiginPage> {
   String? tokenFromFacebook;
   String?  idInsteadOfToken;
   String? idInsteadOfTokenForFacebook;
-
  
   // GoogleSignInAccount? _user;
   // GoogleSignInAccount get user => _user!;
@@ -96,7 +95,7 @@ class _LoginAndSiginPageState extends State<LoginAndSiginPage> {
                           child: TabBar(
                             onTap: (int index) {
                               LoginSigninPageBloc _actionBloc = Provider.of(_,listen: false);
-                              _actionBloc.UserAccountAction(index);
+                              _actionBloc.userAccountAction(index);
                       
                             },
                             labelColor: LOGIN_SCREEN_TAB_BAR_TEXT_COLOR,
@@ -283,7 +282,6 @@ class _LoginAndSiginPageState extends State<LoginAndSiginPage> {
 
   signinFacebook()async{
     final result = await FacebookAuth.instance.login();
-                      
                           if (result.status == LoginStatus.success) {
                             final userData = await FacebookAuth.instance.getUserData(
                               fields: 'email,name',
@@ -334,7 +332,6 @@ class _LoginAndSiginPageState extends State<LoginAndSiginPage> {
   }
 
     siginGoogle(){
-   ///NEW
          GoogleSignIn().signIn().then((value) {
             name.text = value?.displayName ?? '';
              email.text = value?.email ?? '';
@@ -571,6 +568,7 @@ class UserInfoInputSection extends StatelessWidget {
     required this.showPassword
   });
 
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -588,6 +586,7 @@ class UserInfoInputSection extends StatelessWidget {
                   ),
                 ),
                 TextFormField(
+                  key: Key("nameKey"),
                   controller: nameController,
                 ),
               ],
@@ -606,6 +605,7 @@ class UserInfoInputSection extends StatelessWidget {
                 ),
               ),
               TextFormField(
+                key: Key("emailKey"),
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
 
@@ -627,6 +627,7 @@ class UserInfoInputSection extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
+                    key: Key("phoneKey"),
                     controller: phoneController,
                     keyboardType: TextInputType.number,
 
@@ -647,6 +648,7 @@ class UserInfoInputSection extends StatelessWidget {
                 ),
               ),
               TextFormField(
+                key: Key("passwordKey"),
                 controller: passwordController,
                 obscureText: isShowPassword,
                 decoration: InputDecoration(
@@ -712,5 +714,13 @@ class TextFieldSection extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
 
 

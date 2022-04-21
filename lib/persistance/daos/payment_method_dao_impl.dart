@@ -1,17 +1,19 @@
 import 'package:hive/hive.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/payment_vo.dart';
+import 'package:hw3_movie_booking_app/persistance/abstraction_layer/payment_method_dao.dart';
 import 'package:hw3_movie_booking_app/persistance/hive_constants.dart';
 
-class PaymentMethodDao{
+class PaymentMethodDaoImpl extends PaymentMethodDao{
 
-  static final PaymentMethodDao _singleton = PaymentMethodDao._internal();
+  static final PaymentMethodDaoImpl _singleton = PaymentMethodDaoImpl._internal();
 
-  factory PaymentMethodDao(){
+  factory PaymentMethodDaoImpl(){
     return _singleton;
   }
 
-  PaymentMethodDao._internal();
+  PaymentMethodDaoImpl._internal();
 
+  @override
   void saveAllPaymentMethod(List<PaymentVO> paymentMethodList)async{
       Map<int,PaymentVO> getPaymentMethodMap = Map.fromIterable(
         paymentMethodList,
@@ -21,6 +23,7 @@ class PaymentMethodDao{
      return getPaymentMethodBox().putAll(getPaymentMethodMap);
   }
 
+  @override
   List<PaymentVO> getAllPaymentMethod(){
     return getPaymentMethodBox().values.toList();
   }
@@ -28,10 +31,12 @@ class PaymentMethodDao{
 
   ///Reactive Programming
 
+  @override
   Stream<void> getAllPaymentMethodEventStream(){
     return getPaymentMethodBox().watch();
   }
 
+  @override
   List<PaymentVO> getPaymentMethod(){
       if(getAllPaymentMethod() !=null && getAllPaymentMethod().isNotEmpty){
         print("All Payment Method in database =========> ${getAllPaymentMethod()}");
@@ -41,6 +46,7 @@ class PaymentMethodDao{
       }
   }
 
+  @override
   Stream<List<PaymentVO>> getPaymentMethodStream(){
         return Stream.value(getAllPaymentMethod());
   }

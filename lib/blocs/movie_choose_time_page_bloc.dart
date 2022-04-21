@@ -3,6 +3,7 @@ import 'package:hw3_movie_booking_app/data/data.vos/cinema_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/timeslot_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
+import 'package:collection/collection.dart';
 
 class MovieChooseTimePageBloc extends ChangeNotifier{
 
@@ -19,7 +20,11 @@ class MovieChooseTimePageBloc extends ChangeNotifier{
    int? cinemaId;
 
 
-MovieChooseTimePageBloc(String startDate){
+MovieChooseTimePageBloc(String startDate,{MovieModel? mModel}){
+
+  if(mModel != null){
+    movieModel = mModel;
+  }
 
  // ///Cinema Day Timeslot Database
       movieModel.getCinemaDayTimeslotDatabase(startDate).listen((value) {
@@ -43,48 +48,27 @@ getNewTimeslots(String date){
           notifyListeners();
       });
   }
-  
-       List<CinemaVO>? userChooseTimeAction(List<CinemaVO> cinema,int cindex,int index){
-                                cinemaInfo?.forEach((outer) {
-                                  outer.timeslots?.forEach((inner) {
-                                       inner.isSelected = false;
-                                            });
-                               });
-                               notifyListeners();
-                          cinemaInfo?[cindex].timeslots?[index].isSelected = true;
-                          notifyListeners();
-                         userChooseTime = cinema[cindex].timeslots?[index].startTime;
+
+      List<CinemaVO>? userChooseTimeAction(List<CinemaVO> cinema,int cindex,int index){
+        List<CinemaVO>? newActionCinemaList = cinemaInfo?.mapIndexed((i,outer){
+                  outer.timeslots?.mapIndexed((j,inner){
+                      inner.isSelected = false;
+                      if(i == cindex && j == index){
+                        inner.isSelected = true;
+                      }
+                      return inner;
+                  }).toList();
+                  return outer;
+              }).toList();
+              cinemaInfo = newActionCinemaList;
+              notifyListeners();
+                         userChooseTime = cinemaInfo?[cindex].timeslots?[index].startTime;
                          notifyListeners();
-                     userChooseCinema = cinema[cindex].cinema;
-                       userChoosedayTimeslotId = cinema[cindex].timeslots?[index].cinemaDayTimeslotId;
-                         cinemaId = cinema[cindex].cinemaId;
-                         cinemaInfo = cinema;
-                         notifyListeners();
-                         return cinemaInfo;
-                         print(cinemaInfo?[2].timeslots?[2].isSelected);                        
-                                  }
+                     userChooseCinema = cinemaInfo?[cindex].cinema;
+                       userChoosedayTimeslotId = cinemaInfo?[cindex].timeslots?[index].cinemaDayTimeslotId;
+                         cinemaId = cinemaInfo?[cindex].cinemaId;
+                         notifyListeners();                      
+      }
     
-
-    //      void userChooseTimeAction(int cindex,int index,String getDate){
-    //                movieModel.getCinemaDayTimeslotDatabase(getDate.split(" ")[0]).listen((value) {
-    //       print("Get Cinema DayTimeslot with new date in view layer ==============> ${value?.cinemaList}");
-    //        value?.cinemaList?.forEach((outer) {
-    //                               outer.timeslots?.forEach((inner) {
-    //                                    inner.isSelected = false;
-    //                              });
-    //                       });
-    //        value?.cinemaList?[cindex].timeslots?[index].isSelected = true;
-    //         userChooseTime = value?.cinemaList?[cindex].timeslots?[index].startTime;
-    //                 userChooseCinema = value?.cinemaList?[cindex].cinema;
-    //                 userChoosedayTimeslotId = value?.cinemaList?[cindex].timeslots?[index].cinemaDayTimeslotId;
-    //                    cinemaId = value?.cinemaList?[cindex].cinemaId;
-    //       cinemaInfo = value?.cinemaList;
-    //       dateData = getDate.split(" ")[0];
-    //       notifyListeners();
-    //   });     
-    //        notifyListeners();               
-    //  }
-
-
 
 }
