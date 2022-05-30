@@ -37,11 +37,12 @@ UserSelectVO getMockCheckoutForTest(){
 List<CardVO> createCardMockForTest(){
   return [
     CardVO(
-      764,
-      "toeAung",
-      "4345565454",
-      "03/11",
-      "JCB",
+     id: 764,
+     cardHolder: "toeAung",
+     cardNumber: "4345565454",
+     expirationDate: "03/11",
+     cardType: "JCB",
+     isSelected: false,
       ),
   ];
 }
@@ -341,18 +342,20 @@ UserVO profileMockForTest(){
       "/img/avatar2.png",
       [
         CardVO(
-          12,
-           "MgMg", 
-           "4455664455", 
-           "01/12", 
-           "JCB",
+         id: 12,
+          cardHolder: "MgMg", 
+         cardNumber: "4455664455", 
+          expirationDate: "01/12", 
+          cardType: "JCB",
+           isSelected: false,
            ),
            CardVO(
-          13,
-           "MaMA", 
-           "3355664455", 
-           "01/11", 
-           "JCB",
+         id: 13,
+          cardHolder: "MaMA", 
+          cardNumber: "3355664455", 
+          expirationDate: "01/11", 
+          cardType: "JCB",
+          isSelected: false,
            ),
       ], 
        "4139|FPLMcjIhZIaupj47CpN6IiyMX7HHJ6ifRBbFIX3Y",
