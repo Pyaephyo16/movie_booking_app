@@ -19,8 +19,6 @@ class SnackScreenPageBloc extends ChangeNotifier{
   int totalamount = 0;
  List<SnackVO> snackListBought = [];
 
-  bool isChooseCard = true;
-
 
  SnackScreenPageBloc({MovieModel? mModel}){
 

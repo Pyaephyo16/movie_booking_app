@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/checkout_request_vo.dart';
@@ -52,6 +53,25 @@ class PaymentScreenBloc extends ChangeNotifier{
 
   userSelectionCard(int index)async{
           userChoose = profile?[index];
+
+          // List<CardVO>? tempForSelect = profile;
+
+          // if(tempForSelect?.reversed.toList()[index].isSelected == true){
+          //   tempForSelect?.reversed.toList()[index].isSelected = false;
+          // }else{
+          //   tempForSelect?.reversed.toList()[index].isSelected = true;
+          // }
+          // profile = tempForSelect;
+          
+          List<CardVO>? tempForSelect = profile?.reversed.toList().mapIndexed((num,element) {
+                  if(index == num && element.isSelected == false){
+                    element.isSelected = true;
+                  }else if(index == num && element.isSelected == true){
+                    element.isSelected = false;
+                  }
+                  return element;
+          }).toList();
+          profile = tempForSelect?.reversed.toList();
           notifyListeners();
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/movie_list_page_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
@@ -49,7 +51,8 @@ class MovieListScreen extends StatelessWidget {
           child: Drawer(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: MARGIN_MEDIUM_3,),
-              color: SPLASH_SCREEN_BACKGROUND_COLOR,
+              //color: SPLASH_SCREEN_BACKGROUND_COLOR,
+              color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
               child: Column(
                 children: [
                   SizedBox(height: MARGIN_XXLARGE_3XX,),
@@ -114,7 +117,8 @@ class MovieListScreen extends StatelessWidget {
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(6),
                                           ),
-                                          color: PRIMARY_COLOR,
+                                          //color: PRIMARY_COLOR,
+                                          color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                                           textColor: Colors.white,
                                           onPressed: (){
                                             MovieListPageBloc _logoutBloc = Provider.of(context,listen: false);
@@ -164,6 +168,11 @@ class MovieListScreen extends StatelessWidget {
                 SizedBox(
                   height: MARGIN_MEDIUM_4,
                 ),
+                (WIDGET_DESIGN_MOVIES[EnvironmentConfig.CONFIG_WIDGET_DESIGN_MOVIES] == true) ? 
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children:[
                 Selector<MovieListPageBloc,List<MovieVO>>(
                   selector: (context,bloc) => bloc.nowPlayingMovieList ?? [],
                   builder: (context,nowPlayingList,child) =>
@@ -193,6 +202,85 @@ class MovieListScreen extends StatelessWidget {
                     movieList: comingSoonList,
                   ),
                 ),
+                  ],
+                )
+                : 
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                      DefaultTabController(
+                        length: 2,
+                         child:  Selector<MovieListPageBloc,int>(
+                         selector: (context,bloc) => bloc.currentIndex,
+                         shouldRebuild: (previous,next) => previous != next,
+                        builder: (context,currentIndex,child) =>
+                            TabBar(
+                           labelColor: Color.fromRGBO(30,31,48,1.0),
+                           indicatorColor: Color.fromRGBO(30,31,48,1.0),
+                           indicatorSize: TabBarIndicatorSize.label,
+                             onTap: (index){
+                               MovieListPageBloc bloc = Provider.of(context,listen: false);
+                               bloc.chooseTab(index);
+                             },
+                             tabs: [
+                               Tab(child: Text("Now Playing"),),
+                               Tab(child: Text("Coming Soon"),),
+                             ],
+                             ),
+                         ),
+                        ),
+                      SizedBox(height: 16,),
+                      Selector<MovieListPageBloc,int>(
+                         selector: (context,bloc) => bloc.currentIndex,
+                         shouldRebuild: (previous,next) => previous != next,
+                        builder: (context,currentIndex,child) =>
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: (currentIndex == 0) ? 
+                Selector<MovieListPageBloc,List<MovieVO>>(
+                  selector: (context,bloc) => bloc.nowPlayingMovieList ?? [],
+                  builder: (context,nowPlayingList,child) =>
+                                 GridView.builder(
+                                   shrinkWrap: true,
+                                   physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.7,
+                                    ),
+                                  itemCount: nowPlayingList.length,
+                                   itemBuilder: (context,index){
+                                     return GestureDetector(
+                                       onTap: (){
+                                         isNowPlaying = false;
+                             _navigateToMovieDetailScreen(context,nowPlayingList[index].id,isNowPlaying);
+                                       },
+                                       child: MoviesView(movie: nowPlayingList[index])
+                                       );
+                                   }
+                                   ),
+                              )
+                              :
+                               Selector<MovieListPageBloc,List<MovieVO>>(
+                  selector: (context,bloc) => bloc.comingSoonMovieList ?? [],
+                  builder: (context,comingSoonList,child) =>
+                                 GridView.builder(
+                                   shrinkWrap: true,
+                                   physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.7
+                                    ),
+                                  itemCount: comingSoonList.length,
+                                   itemBuilder: (context,index){
+                                     return MoviesView(movie: comingSoonList[index]);
+                                   }
+                                   ),
+                              ),
+                            )
+                        ),
+                  ],
+                )
               ],
             ),
           ),

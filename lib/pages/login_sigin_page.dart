@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/login_signin_page_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
@@ -98,10 +100,12 @@ class _LoginAndSiginPageState extends State<LoginAndSiginPage> {
                               _actionBloc.userAccountAction(index);
                       
                             },
-                            labelColor: LOGIN_SCREEN_TAB_BAR_TEXT_COLOR,
+                            //labelColor: LOGIN_SCREEN_TAB_BAR_TEXT_COLOR,
+                            labelColor: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                             unselectedLabelColor:
                             LOGIN_SCREEN_TAB_BAR_UNSELECT_TEXT_COLOR,
-                            indicatorColor: LOGIN_SCREEN_TAB_BAR_INDICATOR_COLOR,
+                            //indicatorColor: LOGIN_SCREEN_TAB_BAR_INDICATOR_COLOR,
+                            indicatorColor: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                             tabs: tabBarText
                                 .map(
                                   (tabpage) => Tab(
@@ -508,7 +512,8 @@ class ButtonActionView extends StatelessWidget {
                         width: double.infinity,
                         height: BUTTON_HEIGHT,
                         decoration: BoxDecoration(
-                          color: SPLASH_SCREEN_BACKGROUND_COLOR,
+                          //color: SPLASH_SCREEN_BACKGROUND_COLOR,
+                          color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                           borderRadius: BorderRadius.circular(MARGIN_SMALL),
                           //border: isGhostButton ? Border.all(color: Colors.white) : null,
                         ),

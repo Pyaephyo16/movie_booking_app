@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/actor_vo.dart';
+import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/cinema_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/cinemalist_for_hive_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_vo.dart';
@@ -59,7 +60,22 @@ void main(){
      "959770222230",
      0,
       "/img/avatar2.png",
-      null, 
+      [
+        CardVO(
+          12,
+           "MgMg", 
+           "4455664455", 
+           "01/12", 
+           "JCB",
+           ),
+           CardVO(
+          13,
+           "MaMA", 
+           "3355664455", 
+           "01/11", 
+           "JCB",
+           ),
+      ], 
       "4139|FPLMcjIhZIaupj47CpN6IiyMX7HHJ6ifRBbFIX3Y",
        ),
            ),
@@ -101,6 +117,18 @@ void main(){
   ]
            ),
          ),
+         );
+    });
+
+
+    test("Cinema Seat Page",(){
+      expect(
+        movieModel.getCinemaSeatingPlan("1","2022-04-12"),
+         completion(
+           equals(
+            seatingForIntegrationForTest(),
+           ),
+         )
          );
     });
 
@@ -281,7 +309,22 @@ UserVO(
      "959770222230",
      0,
       "/img/avatar2.png",
-      null, 
+      [
+        CardVO(
+          12,
+           "MgMg", 
+           "4455664455", 
+           "01/12", 
+           "JCB",
+           ),
+           CardVO(
+          13,
+           "MaMA", 
+           "3355664455", 
+           "01/11", 
+           "JCB",
+           ),
+      ],
        "4139|FPLMcjIhZIaupj47CpN6IiyMX7HHJ6ifRBbFIX3Y",
        )
   ],
@@ -303,7 +346,22 @@ UserVO(
      "959770222230",
      0,
       "/img/avatar2.png",
-      null, 
+      [
+        CardVO(
+          12,
+           "MgMg", 
+           "4455664455", 
+           "01/12", 
+           "JCB",
+           ),
+           CardVO(
+          13,
+           "MaMA", 
+           "3355664455", 
+           "01/11", 
+           "JCB",
+           ),
+      ], 
        "4139|FPLMcjIhZIaupj47CpN6IiyMX7HHJ6ifRBbFIX3Y",
        ),
        ]

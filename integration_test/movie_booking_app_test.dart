@@ -101,7 +101,7 @@ testWidgets("Movie Booking App Testing",(WidgetTester tester)async{
   await tester.enterText(find.byKey(Key("passwordKey")),USER_PASSWORD);
 
   await tester.tap(find.byType(ButtonActionView));
-  await tester.pumpAndSettle(Duration(seconds: 5));
+  await tester.pumpAndSettle(Duration(seconds: 10));
 
   expect(find.byType(MovieListScreen), findsOneWidget);
 
@@ -132,6 +132,10 @@ testWidgets("Movie Booking App Testing",(WidgetTester tester)async{
 
   expect(find.byType(InfoView), findsOneWidget);
   expect(find.text(NOW_SHOWING_MOVIE_NAME), findsOneWidget);
+
+ await tester.pumpAndSettle(Duration(seconds: 10));
+ await Future.delayed(Duration(seconds: 3));
+
   expect(find.text(MOVIE_RUN_TIME), findsOneWidget);
   expect(find.text(MOVIE_RATING), findsOneWidget);
   expect(find.byType(MoviePlotView), findsOneWidget);

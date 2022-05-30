@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/snack_screen_page_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/payment_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
@@ -264,7 +266,8 @@ ButtonActionViewForClick({required this.title,required this.donedone,required th
                           width: double.infinity,
                           height: BUTTON_HEIGHT,
                           decoration: BoxDecoration(
-                            color: PRIMARY_COLOR,
+                            //color: PRIMARY_COLOR,
+                            color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                             borderRadius: BorderRadius.circular(MARGIN_SMALL),
                           ),
                           child: Center(
@@ -372,14 +375,16 @@ class PaymentMethodView extends StatelessWidget {
                 Text(
                   "${cards[index].name}",
                   style: TextStyle(
-                    color: cards[index].isSelected == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
+                    //color: cards[index].isSelected == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
+                    color: cards[index].isSelected == true ? THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR] : SNAP_SCREEN_HELPER_TEXT_COLOR,
                     fontSize: TEXT_REGULAR_3X,
                   ),
                 ),
                 Text(
                   "${cards[index].description}",
                   style: TextStyle(
-                    color: cards[index].isSelected == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
+                    //color: cards[index].isSelected == true ? PRIMARY_COLOR : SNAP_SCREEN_HELPER_TEXT_COLOR,
+                    color: cards[index].isSelected == true ? THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR] : SNAP_SCREEN_HELPER_TEXT_COLOR,
                     fontSize: TEXT_REGULAR,
                   ),
                 ),

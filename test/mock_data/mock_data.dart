@@ -367,6 +367,8 @@ List<SnackVO> snacksMockForTest(){
   ];
 }
 
+
+
 List<dynamic> registerAndLoginMockForTest(){
   return [
       UserVO(568, "toetoe", "toetoe22@gmail.com", "959770222230", 0, "/img/avatar2.png", null, null),

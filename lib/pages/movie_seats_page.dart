@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/movie_seat_page_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_seat_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/seat_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
@@ -195,7 +197,8 @@ class MovieSeatsPage extends StatelessWidget {
       return MOVIE_SEAT_TAKEN_COLOR;
     }else if(seat.type == "available"){
       if(seat.type == "available" && seat.isSelected == true){
-        return PRIMARY_COLOR;
+        //return PRIMARY_COLOR;
+        return THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR];
       }
       return MOVIE_SEAT_AVAILABLE_COLOR;
     }
@@ -256,7 +259,8 @@ class ButtonActionWidgetView extends StatelessWidget {
                             width: double.infinity,
                             height: BUTTON_HEIGHT,
                             decoration: BoxDecoration(
-                              color: PRIMARY_COLOR,
+                              //color: PRIMARY_COLOR,
+                              color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                               borderRadius: BorderRadius.circular(MARGIN_SMALL),
                           
                             ),
@@ -362,20 +366,21 @@ class MovieSeatsGlossarySectionView extends StatelessWidget {
           Expanded(
               flex: 1,
               child: MovieSeatGlossaryView(
-                MOVIE_SEAT_AVAILABLE_COLOR,
-                LABEL_AVAILABLE,
+               mGlossaryColor: MOVIE_SEAT_AVAILABLE_COLOR,
+               mTitle: LABEL_AVAILABLE,
               )),
           Expanded(
               flex: 1,
               child: MovieSeatGlossaryView(
-                MOVIE_SEAT_TAKEN_COLOR,
-                LABEL_TAKEN,
+               mGlossaryColor: MOVIE_SEAT_TAKEN_COLOR,
+               mTitle: LABEL_TAKEN,
               )),
           Expanded(
               flex: 1,
               child: MovieSeatGlossaryView(
-                SPLASH_SCREEN_BACKGROUND_COLOR,
-                LABEL_YOUR_SELECTION,
+               //mGlossaryColor: SPLASH_SCREEN_BACKGROUND_COLOR,
+               mGlossaryColor: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
+               mTitle: LABEL_YOUR_SELECTION,
               )),
         ],
       ),
@@ -388,7 +393,7 @@ class MovieSeatGlossaryView extends StatelessWidget {
   final Color mGlossaryColor;
   final String mTitle;
 
-  MovieSeatGlossaryView(this.mGlossaryColor, this.mTitle);
+  MovieSeatGlossaryView({required this.mGlossaryColor,required  this.mTitle});
 
   @override
   Widget build(BuildContext context) {

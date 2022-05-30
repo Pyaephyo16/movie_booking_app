@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/payment_info_screen_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
@@ -146,7 +148,8 @@ class NewCardCreateButton extends StatelessWidget {
       width: double.infinity,
       height: BUTTON_HEIGHT,
       decoration: BoxDecoration(
-        color: PRIMARY_COLOR,
+        //color: PRIMARY_COLOR,
+        color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
         borderRadius: BorderRadius.circular(MARGIN_SMALL),
       ),
       child: Center(

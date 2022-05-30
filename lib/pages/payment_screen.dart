@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/payment_screen_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/card_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/checkout_request_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/snack_vo.dart';
@@ -82,13 +84,13 @@ class PaymentScreen extends StatelessWidget {
                         selector: (context,bloc) => bloc.profile ?? [],
                          shouldRebuild: (previous,next) => previous != next,
                         builder: (context,profile,child) =>
-                         CardSectionView(
-                          profile: profile.reversed.toList(),
-                          takeData: (index){
-                          PaymentScreenBloc _cardBloc = Provider.of(context,listen: false);
-                          _cardBloc.userSelectionCard(index);
-                          },
-                        ),
+                            CardSectionView(
+                            profile: profile.reversed.toList(),
+                            takeData: (index){
+                            PaymentScreenBloc _cardBloc = Provider.of(context,listen: false);
+                            _cardBloc.userSelectionCard(index);
+                            },
+                            ),
                       ),
                       SizedBox(height: MARGIN_MEDIUM_3X),
                       // OutlineButton(onPressed: (){
@@ -219,7 +221,8 @@ class ButtonAction extends StatelessWidget {
                         width: double.infinity,
                         height: BUTTON_HEIGHT,
                         decoration: BoxDecoration(
-                          color: PRIMARY_COLOR,
+                          //color: PRIMARY_COLOR,
+                          color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
                           borderRadius: BorderRadius.circular(MARGIN_SMALL),
                       
                         ),
@@ -278,12 +281,15 @@ class CardSectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider.builder(
+    return (WIDGET_DESIGN_CARDS[EnvironmentConfig.CONFIG_WIDGET_DESIGN_CARDS] == true) ? CarouselSlider.builder(
         itemCount: profile.length,
         itemBuilder: (BuildContext context,int index,int pageViewIndex){
           return PaymentCardView(
+            takeData: (index){
+              takeData(index);
+            },
             index: index,
-           data: profile[index],
+           data: profile,
           );
         },
         options: CarouselOptions(
@@ -292,7 +298,8 @@ class CardSectionView extends StatelessWidget {
             print("Card List Length =================> ${profile.length}");
             print("Key =======================> card$index");
           },
-          height: CAROUSEL_SLIDER_HEIGHT,
+          //height: CAROUSEL_SLIDER_HEIGHT,
+          height: 240,
           aspectRatio: 16/9,
           viewportFraction: 0.8,
           enableInfiniteScroll: false,
@@ -300,6 +307,23 @@ class CardSectionView extends StatelessWidget {
           enlargeCenterPage: true,
           scrollDirection: Axis.horizontal,
         ),
+    ) :
+    Container(
+      width: double.infinity,
+      height: 220,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+          itemCount: profile.length,
+          itemBuilder: (BuildContext context,int index){
+            return PaymentCardView(
+              takeData: (index){
+                takeData(index);
+              },
+              index: index,
+             data: profile,
+            );
+          },
+      ),
     );
   }
 }
@@ -307,128 +331,140 @@ class CardSectionView extends StatelessWidget {
 class PaymentCardView extends StatelessWidget {
 
   final int index;
-  final CardVO data;
+  final List<CardVO> data;
+  final Function(int) takeData;
 
-  PaymentCardView({required this.index,required this.data});
+  PaymentCardView({required this.index,required this.data,required this.takeData});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: Key("card$index"),
-      height: MARGIN_VLARGE_1,
-      width: double.infinity,
-      margin: EdgeInsets.only(top: MARGIN_MEDIUM_3,bottom: MARGIN_SMALL,left: MARGIN_MEDIUM,right: MARGIN_MEDIUM),
-      padding: EdgeInsets.all(MARGIN_MEDIUM_4),
-      decoration: BoxDecoration(
-        color: PRIMARY_COLOR,
-        borderRadius: BorderRadius.circular(MARGIN_MEDIUM_2),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: MARGIN_XXLARGE_1XX,
-                height: MARGIN_XLARGE_1,
-              child: Text("${data.cardType}",
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-              ),
-              ),
-              Spacer(),
-              GestureDetector(
-                onTap: (){
-                  print("tap");
-                },
-                child: TextView("..."),
-              ),
-            ],
-          ),
-          SizedBox(height: MARGIN_MEDIUM_4,),
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   children: [
-          //   //   TextView("* * * *"),
-          //   //   Spacer(),
-          //   //   TextView("* * * *"),
-          //   //   Spacer(),
-          //   //  TextView("* * * *"),
-          //   //  Spacer(),
-          //   //   Text("${data.cardNumber?.substring(6)}",
-          //   //     style: TextStyle(
-          //   //       fontSize: TEXT_REGULAR_5X,
-          //   //       color: Colors.white,
-          //   //     ),
-          //   //   ),
-          //   ],
-          // ),
-          Center(
-            child: Text("${data.cardNumber}",
+    print("select test need ===========> ${data[index].isSelected}");
+    return GestureDetector(
+      onTap: (){
+        print("tapped $index");
+        takeData(index);
+        print("select test ===========> ${data[index].isSelected}");
+      },
+      child: Container(
+        key: Key("card$index"),
+        height: 200,
+        //width: double.infinity,
+        width: 360,
+        margin: EdgeInsets.only(top: MARGIN_MEDIUM_3,bottom: MARGIN_SMALL,left: MARGIN_MEDIUM,right: MARGIN_MEDIUM),
+        padding: EdgeInsets.all(MARGIN_MEDIUM_4),
+        decoration: BoxDecoration(
+          //color: PRIMARY_COLOR,
+          color: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
+          borderRadius: BorderRadius.circular(MARGIN_MEDIUM_2),
+          border: (WIDGET_DESIGN_CARDS[EnvironmentConfig.CONFIG_WIDGET_DESIGN_CARDS] == true) ? null : (data[index].isSelected == true) ? Border.all(width: 6,color: Color.fromRGBO(233,189,68,1.0)) : null,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: MARGIN_XXLARGE_1XX,
+                  height: MARGIN_XLARGE_1,
+                child: Text("${data[index].cardType}",
                 style: TextStyle(
-                  fontSize: TEXT_REGULAR_5X,
+                  fontSize: 22,
                   color: Colors.white,
+                  fontWeight: FontWeight.w600,
                 ),
-              ),
-          ),
-          SizedBox(height: MARGIN_MEDIUM_4,),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 4,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Card Holder",
-                        style: TextStyle(
-                          color: VISA_CARD_TEXT_COLOR,
-                          fontSize: TEXT_REGULAR,
-                        ),
-                      ),
-                      SizedBox(height: MARGIN_MEDIUM,),
-                      Text("${data.cardHolder}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: TEXT_REGULAR_3X,
-                        ),
-                      ),
-                    ],
+                ),
+                ),
+                Spacer(),
+                GestureDetector(
+                  onTap: (){
+                    print("tap");
+                  },
+                  child: TextView("..."),
+                ),
+              ],
+            ),
+            SizedBox(height: MARGIN_MEDIUM_4,),
+            // Row(
+            //   mainAxisSize: MainAxisSize.min,
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   children: [
+            //   //   TextView("* * * *"),
+            //   //   Spacer(),
+            //   //   TextView("* * * *"),
+            //   //   Spacer(),
+            //   //  TextView("* * * *"),
+            //   //  Spacer(),
+            //   //   Text("${data.cardNumber?.substring(6)}",
+            //   //     style: TextStyle(
+            //   //       fontSize: TEXT_REGULAR_5X,
+            //   //       color: Colors.white,
+            //   //     ),
+            //   //   ),
+            //   ],
+            // ),
+            Center(
+              child: Text("${data[index].cardNumber}",
+                  style: TextStyle(
+                    fontSize: TEXT_REGULAR_5X,
+                    color: Colors.white,
                   ),
-              ),
-              Expanded(
-                   child: Column(
-                     mainAxisSize: MainAxisSize.min,
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     children: [
-                       Text("Expires",
-                         style: TextStyle(
-                           color: VISA_CARD_TEXT_COLOR,
-                           fontSize: TEXT_REGULAR,
+                ),
+            ),
+            SizedBox(height: MARGIN_MEDIUM_4,),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 4,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Card Holder",
+                          style: TextStyle(
+                            color: VISA_CARD_TEXT_COLOR,
+                            fontSize: TEXT_REGULAR,
+                          ),
+                        ),
+                        SizedBox(height: MARGIN_MEDIUM,),
+                        Text("${data[index].cardHolder}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: TEXT_REGULAR_3X,
+                          ),
+                        ),
+                      ],
+                    ),
+                ),
+                Expanded(
+                     child: Column(
+                       mainAxisSize: MainAxisSize.min,
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text("Expires",
+                           style: TextStyle(
+                             color: VISA_CARD_TEXT_COLOR,
+                             fontSize: TEXT_REGULAR,
+                           ),
                          ),
-                       ),
-                       SizedBox(height: MARGIN_MEDIUM,),
-                       Text("${data.expirationDate}",
-                         style: TextStyle(
-                           color: Colors.white,
-                           fontSize: TEXT_REGULAR_3X,
+                         SizedBox(height: MARGIN_MEDIUM,),
+                         Text("${data[index].expirationDate}",
+                           style: TextStyle(
+                             color: Colors.white,
+                             fontSize: TEXT_REGULAR_3X,
+                           ),
                          ),
-                       ),
-                     ],
-                   ),
-              )
-            ],
-          ),
-        ],
+                       ],
+                     ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

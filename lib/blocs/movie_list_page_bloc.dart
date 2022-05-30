@@ -14,6 +14,8 @@ class MovieListPageBloc extends ChangeNotifier{
   List<MovieVO>? nowPlayingMovieList;
   List<MovieVO>? comingSoonMovieList;
 
+  int currentIndex = 0;
+
   MovieListPageBloc({MovieModel? mModel}){
 
     if(mModel != null){
@@ -50,6 +52,12 @@ class MovieListPageBloc extends ChangeNotifier{
       debugPrint("Coming Soon Movies Database Error =========> ${error.toString()} ");
     });
 
+  }
+
+  int chooseTab(int index){
+    currentIndex = index;
+    notifyListeners();
+    return currentIndex;
   }
 
  Future<void> doLogout(){

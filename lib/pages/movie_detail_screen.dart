@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hw3_movie_booking_app/blocs/movie_detail_page_bloc.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/actor_vo.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/movie_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
@@ -146,8 +148,30 @@ class CastView extends StatelessWidget {
         ),
         Container(
           height: MARGIN_XXLARGE_3X,
-          child: ListView(
+          child: (WIDGET_DESIGN_ACTORS[EnvironmentConfig.CONFIG_WIDGET_DESIGN_ACTORS] == true) ? ListView(
             scrollDirection: Axis.horizontal,
+            children: actorList.map((actor){
+              return (actor.profilePath == null) ? Container() : Container(
+                clipBehavior: Clip.antiAlias,
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                 // borderRadius: BorderRadius.circular(30),
+                ),
+                child: CachedNetworkImage(
+                  imageUrl: "$IMAGE_BASE_URL${actor.profilePath}",
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                     Center(child:  CircularProgressIndicator(value: downloadProgress.progress),),
+                  errorWidget: (context, url, error) => Image.network("https://st.depositphotos.com/2101611/3925/v/600/depositphotos_39258143-stock-illustration-businessman-avatar-profile-picture.jpg",
+                  fit: BoxFit.cover,),
+                ),
+              );
+            }).toList(),
+          ) :
+          Wrap(
             children: actorList.map((actor){
               return (actor.profilePath == null) ? Container() : Container(
                 clipBehavior: Clip.antiAlias,
@@ -345,7 +369,8 @@ class GetTicketButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ButtonView(
       GET_TICKET_BUTTON_TEXT,
-      buttonColor: LOGIN_SCREEN_TAB_BAR_TEXT_COLOR,
+      //buttonColor: LOGIN_SCREEN_TAB_BAR_TEXT_COLOR,
+      buttonColor: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
       onClick: ()=>onClick(),
     );
   }
@@ -360,10 +385,10 @@ class AppBarScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: SPLASH_SCREEN_BACKGROUND_COLOR,
+      //backgroundColor: SPLASH_SCREEN_BACKGROUND_COLOR,
+      backgroundColor: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
       automaticallyImplyLeading: false,
       expandedHeight: MOVIE_DETAIL_SLIVER_APPBAR_HEIGHT,
-
       flexibleSpace: Stack(
         clipBehavior: Clip.none,
         children: [

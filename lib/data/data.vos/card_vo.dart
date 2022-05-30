@@ -28,18 +28,32 @@ class CardVO {
   @HiveField(4)
   String? cardType;
 
+  @HiveField(5)
+  bool? isSelected;
+
+  CardVO({
+    this.id,
+    this.cardHolder,
+    this.cardNumber,
+    this.expirationDate,
+    this.cardType,
+    this.isSelected,
+  });
+
   //CardVO.empytSituation();
 
-  CardVO(this.id, this.cardHolder, this.cardNumber, this.expirationDate,
-      this.cardType);
 
   factory CardVO.fromJson(Map<String,dynamic> json) => _$CardVOFromJson(json);
 
   Map<String,dynamic> toJson()=> _$CardVOToJson(this);
 
+
+
+
+
   @override
   String toString() {
-    return 'CardVO{id: $id, cardHolder: $cardHolder, cardNumber: $cardNumber, expirationDate: $expirationDate, cardType: $cardType}';
+    return 'CardVO(id: $id, cardHolder: $cardHolder, cardNumber: $cardNumber, expirationDate: $expirationDate, cardType: $cardType, isSelected: $isSelected)';
   }
 
   @override
@@ -51,7 +65,8 @@ class CardVO {
       other.cardHolder == cardHolder &&
       other.cardNumber == cardNumber &&
       other.expirationDate == expirationDate &&
-      other.cardType == cardType;
+      other.cardType == cardType &&
+      other.isSelected == isSelected;
   }
 
   @override
@@ -60,6 +75,7 @@ class CardVO {
       cardHolder.hashCode ^
       cardNumber.hashCode ^
       expirationDate.hashCode ^
-      cardType.hashCode;
+      cardType.hashCode ^
+      isSelected.hashCode;
   }
 }

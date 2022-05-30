@@ -304,7 +304,11 @@ class MovieModelImpl extends MovieModel{
       print("All cards put into database ======================> ${value?.cards}");
       var user = mUserDao.getUserInfo();
       String tokenData = user.first.token ?? "";
-      var profileUserData = value as UserVO;
+      UserVO temp = value as UserVO;
+      temp.cards?.forEach((element) {
+          element.isSelected = false;
+      });
+      var profileUserData = temp as UserVO;
       profileUserData.token = tokenData;
       print("Token tosave data into database =================> ${tokenData}");
       cardDao.getCardsFromProfileDatabase(profileUserData);

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:hw3_movie_booking_app/config/config_value.dart';
+import 'package:hw3_movie_booking_app/config/environment_config.dart';
 import 'package:hw3_movie_booking_app/data/data.vos/user_vo.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model.dart';
 import 'package:hw3_movie_booking_app/data/model/movie_model_impl.dart';
@@ -43,7 +45,8 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: SPLASH_SCREEN_BACKGROUND_COLOR,
+      //backgroundColor: SPLASH_SCREEN_BACKGROUND_COLOR,
+      backgroundColor: THEME_COLOR[EnvironmentConfig.CONFIG_THEME_COLOR],
       body: Container(
         padding: EdgeInsets.only(left: MARGIN_MEDIUM_3,right: MARGIN_MEDIUM_3,top: MARGIN_MEDIUM_3),
         child: Column(
@@ -55,7 +58,11 @@ class _SplashPageState extends State<SplashPage> {
             SizedBox(
               height: MARGIN_MEDIUM_2,
             ),
-            IntroTextView(SPLASH_SCREEN_TITLE_TEXT, SPLASH_SCREEN_CONTENT_TEXT),
+            IntroTextView(
+              SPLASH_SCREEN_TITLE_TEXT,
+              TITLE[EnvironmentConfig.CONFIG_TITLE] ?? "",
+               //SPLASH_SCREEN_CONTENT_TEXT
+               ),
             SizedBox(
               height: MARGIN_VLARGE,
             ),
